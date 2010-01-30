@@ -35,8 +35,8 @@ public class FactivaSearch extends Action {
     private Login login;
     private List<String> companyList;
 
-    public FactivaSearch(List<String> companyList) {
-        this.login = new LoginUSYD();
+    public FactivaSearch(List<String> companyList,String user, String pass) {
+        this.login = new LoginUSYD(user,pass);
         this.httpClient = login.getHttpclient();
         this.companyList = companyList;
     }
@@ -248,7 +248,7 @@ public class FactivaSearch extends Action {
 
 
 
-    public void start() {
+    public void start(boolean fuzzy) {
 
 
         List<SearchUnit> searchList = FileLoader.filter(companyList);
@@ -266,7 +266,7 @@ public class FactivaSearch extends Action {
 
             Logger.log("PARSING: " + name + " ... \n");
 
-            CompanyUnit unit = getCompanyName(code, ticker, name, false);
+            CompanyUnit unit = getCompanyName(code, ticker, name, fuzzy);
             StringBuffer buffer = new StringBuffer();
             String header = StringUtil.getXMLheader();
             buffer.append(header);
