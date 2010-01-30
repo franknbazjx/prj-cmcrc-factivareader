@@ -10,11 +10,9 @@
  */
 package com.usyd.factiva;
 
-import com.usdy.log.Appender;
-import com.usdy.log.ProgressUpdater;
+import com.usyd.log.Appender;
+import com.usyd.log.ProgressUpdater;
 import com.usyd.action.FactivaSearch;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -52,7 +50,7 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
-        com.usdy.log.Logger.registerAppender(new Appender() {
+        com.usyd.log.Logger.registerAppender(new Appender() {
 
             public void append(final String msg) {
                 Runnable doUpdate = new Runnable() {
@@ -77,7 +75,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         
-        com.usdy.log.Logger.registerProgressUpdater(new ProgressUpdater() {
+        com.usyd.log.Logger.registerProgressUpdater(new ProgressUpdater() {
 
             public void finished(final int total, final int finished, final String name) {
                 Runnable doUpdate = new Runnable() {
@@ -224,7 +222,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             @Override
             public String doInBackground() throws InterruptedException {
-                FactivaSearch search = new FactivaSearch(textArea, pbar, companies);
+                FactivaSearch search = new FactivaSearch(companies);
                 search.start();
                 return null;
             }

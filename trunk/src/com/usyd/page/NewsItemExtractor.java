@@ -4,7 +4,7 @@
  */
 package com.usyd.page;
 
-import com.usdy.unit.NewsUnit;
+import com.usyd.unit.NewsUnit;
 import java.util.List;
 
 /**

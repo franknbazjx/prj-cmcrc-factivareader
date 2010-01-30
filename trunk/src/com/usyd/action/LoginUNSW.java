@@ -4,7 +4,7 @@
  */
 package com.usyd.action;
 
-import com.usdy.log.Logger;
+import com.usyd.log.Logger;
 import com.usyd.page.HiddenFieldExtractor;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -16,7 +16,7 @@ import org.apache.commons.httpclient.NameValuePair;
  *
  * @author yy
  */
-public class LoginUNSW extends Action {
+public class LoginUNSW extends Login {
 
     private Pattern pattern1 = Pattern.compile("https://([^'\"]*)", Pattern.CASE_INSENSITIVE);
     private Pattern pattern2 = Pattern.compile("location\\s*=\\s*['\"]([^'\"]*)", Pattern.CASE_INSENSITIVE);
@@ -25,28 +25,15 @@ public class LoginUNSW extends Action {
     private Pattern pattern5 = Pattern.compile("form.*action\\s*=\\s*['\"]([^'\"]*).*'REMOTE_ADDR' value='([^']*)'.*'HTTP_REFERER' value='([^']*)'.*'TargetSite' value='([^']*)'.*'InterfaceLanguage' value='([^']*).*'LandingPage' value='([^']*)'.*'ReferedSite' value='([^']*)'.*", Pattern.CASE_INSENSITIVE);
     private Pattern pattern6 = Pattern.compile("\\.action\\s*=\\s*['\"]([^'\"]*)", Pattern.CASE_INSENSITIVE);
     private Pattern pattern7 = Pattern.compile("form.*action\\s*=\\s*['\"]([^'\"]*)", Pattern.CASE_INSENSITIVE);
-    private String _XFORMSESSSTATE;
-    private String _XFORMSTATE;
+
 
     public LoginUNSW() {
-        this.httpClient = new HttpClient();
+        super();
     }
 
 
-
-
-
-    public HttpClient getHttpclient() {
-        try {
-            refresh();
-        } catch (IOException ex) {
-        }
-        return httpClient;
-    }
-
-
-
-    private void refresh() throws IOException {
+    @Override
+    protected String refresh() throws IOException {
 
         httpClient = new HttpClient();
         String url = "http://sfx.nun.unsw.edu.au/V/?func=find-db-1-locate&mode=locate&format=001&F-IDN=NSW00645";
@@ -129,23 +116,6 @@ public class LoginUNSW extends Action {
         rsp = this.getGetContent(url);
         Logger.log("finished!" + "\n\n");
 
-        updateViewState(rsp);
-    }
-
-
-    public void updateViewState(String rsp){
-        HiddenFieldExtractor extractor = new HiddenFieldExtractor(rsp);
-        extractor.loadInput();
-        _XFORMSESSSTATE = extractor.getValueByName("_XFORMSESSSTATE");
-        _XFORMSTATE = extractor.getValueByName("_XFORMSTATE");
-    }
-
-
-    public String getXFORMSESSSTATE() {
-        return _XFORMSESSSTATE;
-    }
-
-    public String getXFORMSTATE() {
-        return _XFORMSTATE;
+        return rsp;
     }
 }
