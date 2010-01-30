@@ -5,8 +5,8 @@
 
 package com.usyd.page;
 
-import com.usdy.log.Logger;
-import com.usdy.unit.CompanyUnit;
+import com.usyd.log.Logger;
+import com.usyd.unit.CompanyUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ public class CompanyNameExtractor extends Extractor {
         super(page);
     }
 
-    public CompanyUnit loadCompanyName(String company) {
+    public CompanyUnit loadCompanyName(String company, boolean fuzzy) {
         //  mnuItm_click(this,'{30:0,5:&quot;ACARES&quot;,29:0,28:&quot;ACACIA RESOURCES LIMITED&quot;,33:0,21:0,20:0}')
         List<String> list = getByPattern("mnuItm_click(.*)", page);
         List<CompanyUnit> colist = new ArrayList<CompanyUnit>();
@@ -39,9 +39,8 @@ public class CompanyNameExtractor extends Extractor {
 
             Collections.sort(colist);
             CompanyUnit unit = colist.get(0);
-            if (unit.getRatio() > 0.6) {
-                Logger.log("\nNOTICE: Dropped: " +
-                        unit.getFullName() + " v.s. " + unit.getSearchName() + "\n" );
+            if ( !fuzzy && unit.getRatio() > 0.6) {
+                Logger.log("DROPPED: " + unit.getSearchName().trim() + " != " + unit.getFullName() + "\n" );
                 return null;
             } else {
                 return unit;

@@ -18,7 +18,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public abstract class Action {
 
-    protected HttpClient httpClient;
+protected HttpClient httpClient;
 
     protected String getPostContent(String url, NameValuePair[] data) {
         PostMethod post = new PostMethod(url);

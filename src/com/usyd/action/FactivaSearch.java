@@ -4,19 +4,18 @@
  */
 package com.usyd.action;
 
-import com.usdy.log.Logger;
-import com.usdy.unit.CompanyUnit;
-import com.usdy.unit.NewsUnit;
+import com.usyd.log.Logger;
+import com.usyd.unit.CompanyUnit;
+import com.usyd.unit.NewsUnit;
 import com.usyd.page.CompanyNameExtractor;
 import com.usyd.page.NewsItemExtractor;
 import com.usyd.page.NewsListExtractor;
 import com.usyd.util.FileLoader;
 import com.usyd.util.StringUtil;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JTextArea;
-import javax.swing.ProgressMonitor;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 
@@ -33,16 +32,16 @@ public class FactivaSearch extends Action {
      *  1.  The fastiva search webpage has been opened
      *  2.  Authentication has been setup.
      */
-    private LoginUSYD login;
+    private Login login;
     private List<String> companyList;
 
-    public FactivaSearch(JTextArea text, ProgressMonitor monitor, List<String> companyList) {
+    public FactivaSearch(List<String> companyList) {
         this.login = new LoginUSYD();
         this.httpClient = login.getHttpclient();
         this.companyList = companyList;
     }
 
-    public LoginUSYD getLogin() {
+    public Login getLogin() {
         return login;
     }
 
@@ -58,7 +57,7 @@ public class FactivaSearch extends Action {
         this.httpClient = httpClient;
     }
 
-    public CompanyUnit getCompanyName(String code, String ticker, String company) {
+    public CompanyUnit getCompanyName(String code, String ticker, String company, boolean fuzzy) {
 
         CompanyUnit unit = null;
 
@@ -79,7 +78,7 @@ public class FactivaSearch extends Action {
             rsp = this.getPostContent(url, data);
 
             CompanyNameExtractor extractor = new CompanyNameExtractor(rsp);
-            unit = extractor.loadCompanyName(company);
+            unit = extractor.loadCompanyName(company, fuzzy);
 
             if (unit != null) {
                 unit.setCode(code);
@@ -246,7 +245,28 @@ public class FactivaSearch extends Action {
         return time * 2;
     }
 
+
+    private void filter(){
+//        List<File> finishedList = new File(".");
+        File root = new File(".");
+        System.out.println(root.getName());
+        String[] list = root.list();
+        for(String line : list){
+            System.out.println(line);
+        }
+        ;
+        
+    }
+
+
     public void start() {
+
+//        filter out finished projects
+        filter();
+
+        
+
+
 
 //        ###############
 
@@ -264,19 +284,19 @@ public class FactivaSearch extends Action {
             } catch (Exception e) {
                 continue;
             }
-            Logger.log("parsing name '" + name + "' ... ");
+            Logger.log("PARSING: " + name + " ... \n");
 
-            CompanyUnit unit = getCompanyName(code, ticker, name);
-            String fileName = name + ".xml";
+            CompanyUnit unit = getCompanyName(code, ticker, name, false);
+            String fileName = code + "_" + ticker + "_" + name + ".xml";
             StringBuffer buffer = new StringBuffer();
             String header = StringUtil.getXMLheader();
             buffer.append(header);
             if (unit != null) {
-                Logger.log("\nSUCCESS: " + unit.getShortName() + " => " + unit.getFullName() + "\n");
+                Logger.log("SUCCESS: " + unit.getShortName() + " => " + unit.getFullName() + "\n\n");
                 getNewsByCompany(unit, buffer);
             } else {
-                Logger.log("\nFAILURE: '" + name + "' not found!" + "\n");
-                Logger.miss(name);
+                Logger.log("FAILURE: " + name + " NOT FOUND!" + "\n\n");
+                Logger.miss(code + "," + ticker + "," + name);
             }
             String footer = StringUtil.getXMLfooter();
             buffer.append(footer);

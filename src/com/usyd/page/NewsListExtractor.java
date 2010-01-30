@@ -4,7 +4,7 @@
  */
 package com.usyd.page;
 
-import com.usdy.log.Logger;
+import com.usyd.log.Logger;
 import java.util.List;
 
 /**

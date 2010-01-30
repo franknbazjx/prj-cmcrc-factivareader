@@ -17,6 +17,15 @@ import org.apache.commons.httpclient.NameValuePair;
  */
 public class FileLoader {
 
+    public static List<String> getXmlFiles(){
+        
+
+        return null;
+    }
+
+
+
+
     public static String getFileString(String fileName) {
 
         StringBuffer fileString = new StringBuffer();
