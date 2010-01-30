@@ -84,7 +84,7 @@ public class Logger {
     }
 
     public static void store(String str, String fileName) {
-        write(str, new File("out/" + fileName), true);
+        write(str, new File(fileName), true);
     }
 
     public static void error(String str) {

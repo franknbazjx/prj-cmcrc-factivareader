@@ -251,12 +251,10 @@ public class FactivaSearch extends Action {
     public void start(boolean fuzzy) {
 
 
-        List<SearchUnit> searchList = FileLoader.filter(companyList);
+        List<SearchUnit> searchList = FileLoader.filter(companyList, fuzzy);
        
 //        filter out finished projects
 
-
-//        ###############
 
         for (SearchUnit searchUnit : searchList) {
 
@@ -270,16 +268,20 @@ public class FactivaSearch extends Action {
             StringBuffer buffer = new StringBuffer();
             String header = StringUtil.getXMLheader();
             buffer.append(header);
+            String path = "";
+
             if (unit != null) {
                 Logger.log("SUCCESS: " + unit.getShortName() + " => " + unit.getFullName() + "\n\n");
                 getNewsByCompany(unit, buffer);
+                path = "out/";
             } else {
                 Logger.log("FAILURE: " + name + " NOT FOUND!" + "\n\n");
                 Logger.miss(searchUnit.getCsvRecord());
+                path = "emp/";
             }
             String footer = StringUtil.getXMLfooter();
             buffer.append(footer);
-            Logger.store(buffer.toString(), searchUnit.getXmlFile());
+            Logger.store(buffer.toString(), path + searchUnit.getXmlFile());
 
         }
         Logger.flush();
