@@ -22,9 +22,12 @@ import org.apache.commons.httpclient.methods.PostMethod;
  * @author yy
  */
 public class LoginUSYD extends Login {
-
-    public LoginUSYD() {
+    private String user;
+    private String pass;
+    public LoginUSYD(String user, String pass) {
         super();
+        this.user = user;
+        this.pass = pass;
     }
 
     private String get(String url, String referer) throws IOException {
@@ -85,6 +88,7 @@ public class LoginUSYD extends Login {
 
     private String login(String user, String pass, String para, String url, String referer) throws IOException {
         url = "https://login.ezproxy1.library.usyd.edu.au/login";//force to use this https
+        para += "&user=>"+user + "&pass=>"+pass;
         PostMethod post = new PostMethod(url);
         post.getParams().setCookiePolicy(CookiePolicy.NETSCAPE);// need this line to login into usyd
         String[] paras = para.split("&");
@@ -138,13 +142,13 @@ public class LoginUSYD extends Login {
         page = get(newurl, url);
 
         url = newurl;
-        newurl = extractParameter(page, "form action=.([^'\"]*).*?name=.([^'\"]*).*?value=.([^'\"]*).*?name=.([^'\"]*).*?value=.([^'\"]*).*?(input).*?(input).*?form", "#{2}=>#{3}&#{4}=>#{5}&user=>finc&pass=>finc2008");
+        newurl = extractParameter(page, "form action=.([^'\"]*).*?name=.([^'\"]*).*?value=.([^'\"]*).*?name=.([^'\"]*).*?value=.([^'\"]*).*?(input).*?(input).*?form", "#{2}=>#{3}&#{4}=>#{5}");
 //        LOG.info("3(login):" + base + "/login," + url);
 
 
         String redir = null;
         try {
-            redir = login("finc", "finc2008", newurl, base + "/login", url);
+            redir = login(user, pass, newurl, base + "/login", url);
             Logger.log(".");
         } catch (Exception e) {
             //System.out.println("##\tLogin Exc: " + redir);

@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * MainFrame.java
  *
  * Created on 27/01/2010, 10:21:24 PM
@@ -22,10 +17,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.ProgressMonitor;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.Timer;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
@@ -74,7 +68,7 @@ public class MainFrame extends javax.swing.JFrame {
                 SwingUtilities.invokeLater(doUpdate);
             }
         });
-        
+
         com.usyd.log.Logger.registerProgressUpdater(new ProgressUpdater() {
 
             public void finished(final int total, final int finished, final String name) {
@@ -108,6 +102,7 @@ public class MainFrame extends javax.swing.JFrame {
         openBtn = new javax.swing.JButton();
         startBtn = new javax.swing.JButton();
         pBar = new javax.swing.JProgressBar();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Factiva");
@@ -132,26 +127,31 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        jCheckBox1.setText("Fuzzy Search");
+        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(openBtn)
-                .addGap(18, 18, 18)
-                .addComponent(pBar, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pBar, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addGap(13, 13, 13)
                 .addComponent(startBtn)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBox1))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(openBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(startBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jCheckBox1)
+                        .addComponent(startBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pBar, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -162,7 +162,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -209,33 +209,39 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_openBtnActionPerformed
     SwingWorker worker;
     private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        //        progressBar.setStringPainted(true);
-        //        progressBar.setMaximum(1000);
-        //        startBtn.setEnabled(false);
+        PasswordPanel passPanel = new PasswordPanel();
+        int action = JOptionPane.showConfirmDialog(null, passPanel, "Enter User Name and Password", JOptionPane.OK_CANCEL_OPTION);
+        if (action < 0) {
+            return;
+        } else {
+            user = passPanel.getUser();
+            pass = passPanel.getPassword();
+            if (user.trim().length() == 0 || pass.trim().length() == 0) {
+                return;
+            }
+        }
+
         startBtn.setEnabled(false);
         pBar.setStringPainted(true);
-        pbar = new ProgressMonitor(this, "Monitoring Progress", "Initializing . . .", 0, 100);
-        pbar.setProgress(1);
-        pbar.setNote("starting...");
 
         worker = new SwingWorker<String, Void>() {
 
             @Override
             public String doInBackground() throws InterruptedException {
-                FactivaSearch search = new FactivaSearch(companies);
-                search.start();
+                FactivaSearch search = new FactivaSearch(companies, user,pass);
+                search.start(jCheckBox1.isSelected());
                 return null;
             }
 
             @Override
             public void done() {
-                //Remove the "Loading images" label.
-                System.out.println("done!");
+//                System.out.println("done!");
             }
         };
         worker.execute();
     }//GEN-LAST:event_startBtnActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton openBtn;
@@ -244,8 +250,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
     private File csvFile;
-    private static ProgressMonitor pbar;
-    private static int counter = 0;
-    private Timer timer;
-
+    private String user;
+    private String pass;
 }
