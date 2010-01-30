@@ -4,10 +4,13 @@
  */
 package com.usyd.util;
 
+import com.usyd.log.Logger;
+import com.usyd.unit.SearchUnit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.apache.commons.httpclient.NameValuePair;
 
@@ -24,7 +27,31 @@ public class FileLoader {
     }
 
 
+    public static List<SearchUnit> filter(List<String> companyList){
+//        List<File> finishedList = new File(".");
+        File root = new File("out");
+        String[] list = root.list();
+        HashSet finished = new HashSet();
+        for(String line : list){
+            if(line.endsWith(".xml")){
+                finished.add(line);
+            }
+        }
 
+        List<SearchUnit> newCompList = new ArrayList<SearchUnit>();
+        for(String line : companyList){
+
+            String[] tmp = line.split(",[\\s]*");
+            SearchUnit unit = new SearchUnit(tmp[0], tmp[1], tmp[2]);
+            String file = unit.getXmlFile();
+            if(finished.contains(file)){
+               Logger.log("SKIPPED: " + unit.getName() + "\n");
+            } else {
+                newCompList.add(unit );
+            }
+        }
+        return newCompList;
+    }
 
     public static String getFileString(String fileName) {
 
@@ -46,7 +73,7 @@ public class FileLoader {
             String _XFORMSTATE, int offset, int total){
         List<NameValuePair> list = new ArrayList();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("npage.txt")));
+            BufferedReader br = new BufferedReader(new FileReader(new File("npage.ini")));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] items = line.split("=");
@@ -88,7 +115,7 @@ public class FileLoader {
             String _XFORMSTATE, String _COMPANY_NAME){
         List<NameValuePair> list = new ArrayList();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("search.txt")));
+            BufferedReader br = new BufferedReader(new FileReader(new File("search.ini")));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] items = line.split("=");
