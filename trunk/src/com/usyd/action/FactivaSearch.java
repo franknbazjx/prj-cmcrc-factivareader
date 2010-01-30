@@ -10,9 +10,9 @@ import com.usyd.unit.NewsUnit;
 import com.usyd.page.CompanyNameExtractor;
 import com.usyd.page.NewsItemExtractor;
 import com.usyd.page.NewsListExtractor;
+import com.usyd.unit.SearchUnit;
 import com.usyd.util.FileLoader;
 import com.usyd.util.StringUtil;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,7 +105,6 @@ public class FactivaSearch extends Action {
 //        rsp page is an valid artical searching page;
 
         Logger.log("collecting links ... ");
-
 
         NewsListExtractor extractor = new NewsListExtractor(rsp);
         int numOfItems = extractor.getNumOfNews();
@@ -246,48 +245,28 @@ public class FactivaSearch extends Action {
     }
 
 
-    private void filter(){
-//        List<File> finishedList = new File(".");
-        File root = new File(".");
-        System.out.println(root.getName());
-        String[] list = root.list();
-        for(String line : list){
-            System.out.println(line);
-        }
-        ;
-        
-    }
+
 
 
     public void start() {
 
+
+        List<SearchUnit> searchList = FileLoader.filter(companyList);
+       
 //        filter out finished projects
-        filter();
-
-        
-
 
 
 //        ###############
 
-        for (String line : companyList) {
+        for (SearchUnit searchUnit : searchList) {
 
-            String code;
-            String ticker;
-            String name;
-//            ##########3
-            try {
-                String[] temp = line.split(",");
-                code = temp[0];
-                ticker = temp[1];
-                name = temp[2];
-            } catch (Exception e) {
-                continue;
-            }
+            String name = searchUnit.getName();
+            String ticker = searchUnit.getTicker();
+            String code = searchUnit.getCode();
+
             Logger.log("PARSING: " + name + " ... \n");
 
             CompanyUnit unit = getCompanyName(code, ticker, name, false);
-            String fileName = code + "_" + ticker + "_" + name + ".xml";
             StringBuffer buffer = new StringBuffer();
             String header = StringUtil.getXMLheader();
             buffer.append(header);
@@ -296,11 +275,11 @@ public class FactivaSearch extends Action {
                 getNewsByCompany(unit, buffer);
             } else {
                 Logger.log("FAILURE: " + name + " NOT FOUND!" + "\n\n");
-                Logger.miss(code + "," + ticker + "," + name);
+                Logger.miss(searchUnit.getCsvRecord());
             }
             String footer = StringUtil.getXMLfooter();
             buffer.append(footer);
-            Logger.store(buffer.toString(), fileName);
+            Logger.store(buffer.toString(), searchUnit.getXmlFile());
 
         }
         Logger.flush();

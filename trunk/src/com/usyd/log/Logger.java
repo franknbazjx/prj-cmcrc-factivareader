@@ -36,7 +36,7 @@ public class Logger {
         sb.append(str);
 
         if (sb.length() > 2000) {
-            write(sb.toString(), new File("log.txt"), true);
+            write(sb.toString(), new File("log/log.txt"), true);
             sb.setLength(0);
         }
     }
@@ -61,7 +61,7 @@ public class Logger {
     }
 
     public static void flush() {
-        write(sb.toString(), new File("log.txt"), true);
+        write(sb.toString(), new File("log/log.txt"), true);
         sb.setLength(0);
     }
 
@@ -84,15 +84,15 @@ public class Logger {
     }
 
     public static void store(String str, String fileName) {
-        write(str, new File(fileName), true);
+        write(str, new File("out/" + fileName), true);
     }
 
     public static void error(String str) {
         flush();
-        write(str, new File("error_" + System.currentTimeMillis() + ".txt"), false);
+        write(str, new File("log/error_" + System.currentTimeMillis() + ".txt"), false);
     }
 
     public static void miss(String name) {
-        write(name, new File("missing.txt"), true);
+        write(name, new File("log/missing.csv"), true);
     }
 }
