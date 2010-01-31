@@ -31,7 +31,7 @@ public class StringUtil {
     public static String getSearchProfile(String code, String ticker, String company){
             String content = "";
             content += "\t\t<CODE>" + code + "</CODE>\n";
-            content += "\t<TICKET>" + ticker + "</TICKET>\n";
+            content += "\t<TICKER>" + ticker + "</TICKER>\n";
             content += "\t\t<COMPANY>" + company + "</COMPANY>\n";
             return content;
     }
