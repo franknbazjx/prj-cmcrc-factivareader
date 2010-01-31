@@ -131,6 +131,11 @@ public class FactivaSearch extends Action {
                 extractor = new NewsListExtractor(rsp);
                 if (!extractor.isErrorPage()) {
                     List<String> newsList = extractor.getLinks();
+                    Logger.error("\n============== Turning Page Error ========================\n");
+                    if(newsList.size() == 0){
+                        Logger.error(rsp);
+                    }
+                    Logger.error("\n============== Turning Page Error ========================\n");
                     for (String str : newsList) {
                         list.add(str);
                     }
