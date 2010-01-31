@@ -1,0 +1,376 @@
+loading ....... finished!
+
+PARSING: acacia resources limited ... 
+DROPPED: acacia resources != AngloGold Ashanti Ltd
+FAILURE: acacia resources limited NOT FOUND!
+
+PARSING: absolute return fund (the) ... 
+FAILURE: absolute return fund (the) NOT FOUND!
+
+PARSING: australian asiatic corporation limited ... 
+FAILURE: australian asiatic corporation limited NOT FOUND!
+
+PARSING: australian agricultural company limited. ... 
+SUCCESS: AUSTAG => Australian Agricultural Co Ltd
+
+collecting links ... expected: 530 collected: 530
+
+------1------
+Retrieving: AAco to sell off properties | 23 December 2008
+
+------2------
+Retrieving: Property sale bolsters AAco | 23 December 2008
+
+------3------
+Retrieving: AAco in $250m bid to sell off Queensland properties | 23 December 2008
+
+------4------
+Retrieving: AACo sells five cattle properties for $250m | 23 December 2008
+
+------5------
+Retrieving: AACo to sell five cattle properties to reduce debt | 23 December 2008
+
+------6------
+Retrieving: Futuris expects profit from AACo stake | 22 December 2008
+
+------7------
+Retrieving: AAco in talks to sell four Qld Stations | 18 December 2008
+
+------8------
+Retrieving: Beef prices hit by global crisis | 18 December 2008
+
+------9------
+Retrieving: Mustering up savings - AACo selling off properties to reduce debts | 18 December 2008
+
+------10------
+Retrieving: Break up and smell the coffee | 15 December 2008
+
+------11------
+Retrieving: Non-core assets for sale | 15 December 2008
+
+------12------
+Retrieving: Futuris looks at low price for AAco | 11 December 2008
+
+------13------
+Retrieving: Hard scrabble for farm plays | 9 December 2008
+
+------14------
+Retrieving: Futuris positive about revamp | 3 December 2008
+
+------15------
+Retrieving: Futuris learning from past mistakes | 2 December 2008
+
+------16------
+Retrieving: Sales and mergers a solution | 2 December 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------17------
+Retrieving: Futuris down onprofit warning | 29 October 2008
+------18------
+Retrieving: Market bullish for beef | 26 September 2008
+
+------19------
+Retrieving: Beef market outlook `improving&apos; | 26 September 2008
+
+------20------
+Retrieving: Hopes for land fund | 10 September 2008
+
+------21------
+Retrieving: Futuris looks to slice off AACo stake | 30 August 2008
+
+------22------
+Retrieving: Life looking up for AACo | 19 August 2008
+
+------23------
+Retrieving: 2007-08 DIVIDENDS | 16 August 2008
+
+------24------
+Retrieving: Futuris down 65pc, hints at non-core assets sell-off | 15 August 2008
+
+------25------
+Retrieving: Gloomy Futuris may make sales | 15 August 2008
+
+------26------
+Retrieving: AACo beefs up sales | 13 August 2008
+
+------27------
+Retrieving: Beef major is hit by rising costs | 13 August 2008
+
+------28------
+Retrieving: An oldie, but not a goodie | 13 August 2008
+
+------29------
+Retrieving: Positive AACo looksto stronger future | 13 August 2008
+
+------30------
+Retrieving: Strong dollar takes toll on beef margins | 13 August 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------31------
+Retrieving: AAco raw from loss but buoyant | 13 August 2008
+
+------32------
+Retrieving: Drought and feed costs hit AACo but falling dollar a help | 13 August 2008
+
+------33------
+Retrieving: CATTLE Cash flow rises but profit drops AACo beefs up sales | 13 August 2008
+
+------34------
+Retrieving: Costs tip AACo into the red | 13 August 2008
+
+------35------
+Retrieving: Victims of circumstance | 7 August 2008
+
+------36------
+Retrieving: Futuris share price savaged on shock 20% profit downgrade | 26 June 2008
+
+------37------
+Retrieving: Green into gold | 19 June 2008
+
+------38------
+Retrieving: Mystery buyer gradually building a stake in AACo | 10 June 2008
+
+------39------
+Retrieving: Correction | 27 May 2008
+
+------40------
+Retrieving: AAco to reassess Elders court case [CORRECTED] | 26 May 2008
+
+------41------
+Retrieving: AAco to reassess Elders court cast | 26 May 2008
+------42------
+Retrieving: Fischer meditates on the meaning of love and life | 25 May 2008
+
+------43------
+Retrieving: BIG PRICE MOVERS | 23 May 2008
+
+------44------
+Retrieving: AACo role for Futuris director | 23 May 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------45------
+Retrieving: All change at AACo - Futuris defends rebuilding role | 23 May 2008
+
+------46------
+Retrieving: CITY BEAT | 23 May 2008
+
+------47------
+Retrieving: QUICK NEWS | 22 May 2008
+
+------48------
+Retrieving: Turmoil as Futuris ousts AACo chairman | 22 May 2008
+
+------49------
+Retrieving: Bad blood surfaces as beef boss ousted | 22 May 2008
+
+------50------
+Retrieving: Independents quit as Futuris sacks agri player&apos;s chairman | 22 May 2008
+
+------51------
+Retrieving: Independents quit as Futuris sacks AAco&apos;s chairman | 22 May 2008
+
+------52------
+Retrieving: Tensions rise as Futuris aims for AACo control | 21 May 2008
+
+------53------
+Retrieving: AACo chief to be ousted by Futuris | 21 May 2008
+
+------54------
+Retrieving: Futuris bid to oust AACo chair | 21 May 2008
+
+------55------
+Retrieving: Futuris bid for AACo | 21 May 2008
+
+------56------
+Retrieving: Futuris eyes AACo helm | 21 May 2008
+
+------57------
+Retrieving: Chanticleer | 20 May 2008
+
+------58------
+Retrieving: Futuris boss airs his beef on AACo | 10 May 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------59------
+Retrieving: Futuris, AACo fall as sale of stake fails | 8 May 2008
+
+------60------
+Retrieving: BIG PRICE MOVERS | 8 May 2008
+
+------61------
+Retrieving: Futuris mulls way ahead after deal fails | 8 May 2008
+
+------62------
+Retrieving: Futuris fried as beef stake off | 8 May 2008
+
+------63------
+Retrieving: Futuris needs to get its act together | 8 May 2008
+
+------64------
+Retrieving: Futuris U-turn spooks AACo | 8 May 2008
+
+------65------
+Retrieving: Futuris keeps its beef | 7 May 2008
+------66------
+Retrieving: Futuris pulls sale as outlook brightens | 7 May 2008
+
+------67------
+Retrieving: Futuris, AACo to suffer without sale | 7 May 2008
+
+------68------
+Retrieving: Futuris fails to round up AACo buyer | 7 May 2008
+
+------69------
+Retrieving: Futuris keeps steak - Beef group share sale called off | 7 May 2008
+
+------70------
+Retrieving: Packer could be new cattle king | 1 May 2008
+
+------71------
+Retrieving: Packer in Top End round-up - Eyeing cattle group | 1 May 2008
+
+------72------
+Retrieving: Steaks are high for Packer | 30 April 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------73------
+Retrieving: Food companies get their time in the sun | 30 April 2008
+
+------74------
+Retrieving: Packer may make a play for Aussie pastoral gem | 30 April 2008
+
+------75------
+Retrieving: Packer-Myer firms as AACo favourites | 29 April 2008
+
+------76------
+Retrieving: Vice-Regal | 23 April 2008
+
+------77------
+Retrieving: Lie of the land | 17 April 2008
+
+------78------
+Retrieving: A growth business -- Agriculture bucks trend in profit forecast | 17 April 2008
+
+------79------
+Retrieving: Out of favour     | 26 March 2008
+
+------80------
+Retrieving: Buying into the bush has growing appeal    | 11 March 2008
+
+------81------
+Retrieving: Future&apos;s good despite bad start    | 8 February 2008
+
+------82------
+Retrieving: CRITERION    | 8 February 2008
+
+------83------
+Retrieving: AACo plunges &amp;lt;&amp;gt; Primary draws the line &amp;lt;&amp;gt; Smith joins  Rio Tinto &amp;lt;&amp;gt; Raid on broker &amp;lt;&amp;gt; CMA bulks up in NZ &amp;lt;&amp;gt; Chinese buy dairy stake &amp;lt;&amp;gt;  Disney tops forecast    | 7 February 2008
+
+------84------
+Retrieving: Focus - Fertile frontiers    | 7 February 2008
+
+------85------
+Retrieving: AACo wants early sale of Futuris stake    | 7 February 2008
+
+------86------
+Retrieving: Drought strips profit at AACo    | 7 February 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------87------
+Retrieving: Strong dollar, feed costs hit AACo earnings    | 7 February 2008
+
+------88------
+Retrieving: AACo thinner due to dollar and drought     | 7 February 2008
+
+------89------
+Retrieving: AACo thinner due to dollar and drought     | 7 February 2008
+
+------90------
+Retrieving: DECLINE Shareholders reap benefit but . . . Lean profits still trouble beef breeder    | 7 February 2008
+
+------91------
+Retrieving: BHP coming up with the readies    | 6 February 2008
+
+------92------
+Retrieving: AACo flags plan to secure its future [CORRECTED]    | 5 February 2008
+
+------93------
+Retrieving: Movement at the Packer stations    | 1 February 2008
+
+------94------
+Retrieving: GPG harvest sets the minds racing     | 24 January 2008
+
+------95------
+Retrieving: AACo exit    | 23 January 2008
+
+------96------
+Retrieving: AACo drops chief as sale looms    | 23 January 2008
+
+------97------
+Retrieving: AACo chief goes, Futuris to follow    | 23 January 2008
+
+------98------
+Retrieving: Cattle giant CEO quits as speculation mounts    | 23 January 2008
+
+------99------
+Retrieving: Cattle giant loses its leader    | 23 January 2008
+
+------100------
+Retrieving: Meat lovers fatten stock    | 22 January 2008
+
+
+NOTICE: The server has blocked this token ...
+NOTICE: Get a new token in 1 secs...
+
+loading ....... finished!
+
+------101------
+Retrieving: AACo sale fillip for Futuris AACo sale fillip for Futuris    | 16 January 2008
+
+------102------
+Retrieving: FUTURIS Stake bought    | 12 January 2008
+
+------103------
+Retrieving: Norman in deal to sell beef to the US    | 12 January 2008
+
+------104------
+Retrieving: AACo sale fillip for Futuris AACo sale fillip for Futuris    | 16 January 2008
+
+------105------
+Retrieving: FUTURIS Stake bought    | 12 January 2008
+
+------106------
+Retrieving: Norman in deal to sell beef to the US    | 12 January 2008
+
+------107------
+Retrieving: Stronger AACo share price may put spanner in the works    | 10 January 2008
