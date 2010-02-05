@@ -19,33 +19,38 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public abstract class Action {
 
-protected HttpClient httpClient;
+    protected HttpClient httpClient;
 
     protected String getPostContent(String url, NameValuePair[] data) {
-        Logger.log("Post: " + url + "\n");
+
+        //Logger.log("Post: " + url + "\n");
         PostMethod post = new PostMethod(url);
         post.setRequestBody(data);
         post.setRequestHeader(new Header("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.7) Gecko/20100106 Ubuntu/9.10 (karmic) Firefox/3.5.7"));
         try {
             httpClient.executeMethod(post);
+            String rsp = PageLoader.getPage(post);
+            //Logger.log("done!\n");
+            return rsp;
         } catch (IOException ex) {
+            Logger.log("##\ttimeout!\n");
+            return "";
         }
-        String rsp = PageLoader.getPage(post);
-        Logger.log("done!\n");
-        return rsp;
     }
 
     protected String getGetContent(String url) {
 
 
-        Logger.log("Get: " + url + "\n");
+        //Logger.log("Get: " + url + "\n");
         GetMethod get = new GetMethod(url);
         try {
             httpClient.executeMethod(get);
+            String rsp = PageLoader.getPage(get);
+            //Logger.log("done!\n");
+            return rsp;
         } catch (IOException ex) {
+            Logger.log("##\ttimeout!\n");
+            return "";
         }
-        String rsp = PageLoader.getPage(get);
-        Logger.log("done!\n");
-        return rsp;
     }
 }
