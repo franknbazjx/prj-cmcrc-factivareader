@@ -8,6 +8,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,9 +21,14 @@ public class Logger {
 
     private static List<Appender> appenders = new ArrayList<Appender>();
     private static ProgressUpdater progress = null;
-    private static StringBuilder sb = new StringBuilder();
 
     public static void log(String str) {
+
+        if (!str.startsWith(".")) {
+
+            Time date = new Time(System.currentTimeMillis());
+            str = "[" + date.toString() + "] " + str;
+        }
         try {
             for (Appender apd : appenders) {
                 apd.append(str);
@@ -33,12 +39,7 @@ public class Logger {
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.SEVERE, null, ex);
         }
-        sb.append(str);
-
-        if (sb.length() > 2000) {
-            write(sb.toString(), new File("log/log.txt"), true);
-            sb.setLength(0);
-        }
+        write(str, new File("log/log.txt"), true);
     }
 
     public static void registerAppender(Appender apd) {
@@ -58,11 +59,6 @@ public class Logger {
 
     public static void registerProgressUpdater(ProgressUpdater progress) {
         Logger.progress = progress;
-    }
-
-    public static void flush() {
-        write(sb.toString(), new File("log/log.txt"), true);
-        sb.setLength(0);
     }
 
     private static void write(String str, File file, boolean append) {
@@ -88,7 +84,6 @@ public class Logger {
     }
 
     public static void error(String str) {
-        flush();
         write(str, new File("log/error_" + System.currentTimeMillis() + ".txt"), false);
     }
 

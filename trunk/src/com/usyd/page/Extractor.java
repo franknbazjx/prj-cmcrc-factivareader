@@ -33,6 +33,11 @@ public abstract class Extractor {
         return page.contains(error);
     }
 
+    public boolean isTwoExpressionError(){
+        String error ="The connector NOT can only be used to connect two expressions.";
+        return page.contains(error);
+    }
+
     public boolean isNoResult(){
         String error = "<div id=\"headlines\" class=\"headlines\">&nbsp;No results.</div></div>";
         return page.contains(error);

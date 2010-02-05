@@ -45,10 +45,6 @@ public class FactivaSearch extends Action {
         return login;
     }
 
-    public void setLogin(LoginUSYD login) {
-        this.login = login;
-    }
-
     public HttpClient getHttpClient() {
         return httpClient;
     }
@@ -65,8 +61,10 @@ public class FactivaSearch extends Action {
         while (true) {
             String _xformsessstate = login.getXFORMSESSSTATE();
             String rsp;
+
+            String url = login.getSbService();
             //  String url = "http://global.factiva.com/sb/sbservice.aspx";
-            String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/sb/sbservice.aspx";
+            //  String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/sb/sbservice.aspx";
             NameValuePair[] data = {
                 new NameValuePair("_XFORMSESSSTATE", _xformsessstate),
                 new NameValuePair("hideInfo", "false"),
@@ -123,25 +121,33 @@ public class FactivaSearch extends Action {
 
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
                         login.getXFORMSTATE(), (currentPage - 1) * 100, numOfItems);
-//                String url = "http://global.factiva.com/ha/default.aspx";
 
-                String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
+                String url = login.getDefault();
+                //String url = "http://global.factiva.com/ha/default.aspx";
+
+                //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
                 rsp = this.getPostContent(url, data);
 
                 extractor = new NewsListExtractor(rsp);
-                if (!extractor.isErrorPage()) {
+
+                if (extractor.isErrorPage() || extractor.isTwoExpressionError()) {
+
+                    sleep = reset(sleep);
+                    if (sleep > 300) {
+                        Logger.log("\n============== Turning Response Error ========================\n");
+                        return null;
+                    }
+                } else {
                     List<String> newsList = extractor.getLinks();
-                    Logger.error("\n============== Turning Page Error ========================\n");
-                    if(newsList.size() == 0){
+
+                    if (newsList.size() == 0) {
+                        Logger.error("\n============== Turning Page Error ========================\n");
                         Logger.error(rsp);
                     }
-                    Logger.error("\n============== Turning Page Error ========================\n");
                     for (String str : newsList) {
                         list.add(str);
                     }
                     break;
-                } else {
-                    sleep = reset(sleep);
                 }
             }
             currentPage++;
@@ -155,9 +161,11 @@ public class FactivaSearch extends Action {
 
         List<NewsUnit> output = new ArrayList<NewsUnit>();
         List<String> newsList = new ArrayList();
-
+        
+        String url = login.getDefault();
 //        String url = "http://global.factiva.com/ha/default.aspx";
-        String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
+//        String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
+
 
         String _COMPANY_NAME = "[{30:0,5:\""
                 + unit.getShortName().trim() + "\",29:0,28:\""
@@ -172,8 +180,12 @@ public class FactivaSearch extends Action {
             NewsListExtractor extractor = new NewsListExtractor(rsp);
             if (!extractor.isErrorPage()) {
                 newsList = this.getNewsLinks(rsp);
-                Logger.log("collected: " + newsList.size() + "\n\n");
-                break;
+                if (newsList == null) {
+                    continue;
+                } else {
+                    Logger.log("collected: " + newsList.size() + "\n\n");
+                    break;
+                }
             } else {
                 sleep = reset(sleep);
             }
@@ -183,9 +195,11 @@ public class FactivaSearch extends Action {
         for (String link : newsList) {
 
             // open each articles
-//            url = "http://global.factiva.com/aa/?" + link;
 
-            url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
+            url = login.getAa(link);
+
+//            url = "http://global.factiva.com/aa/?" + link;
+//            url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
 
             sleep = 1;
             while (true) {
@@ -230,9 +244,9 @@ public class FactivaSearch extends Action {
 
     private int reset(int time) {
 
-        if (time > 300) {
-            Logger.log("WARNING: no connection available, mission failed, please restart the system!\n");
-            time = 100000;
+        if (time > 600) {
+            Logger.log("WARNING: no connection available, mission failed, reset the timer!\n");
+            time = 1;
         }
         String text1 = "\nNOTICE: The server has blocked this token ..." + "\n";
         String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
@@ -289,6 +303,5 @@ public class FactivaSearch extends Action {
             Logger.store(buffer.toString(), path + searchUnit.getXmlFile());
 
         }
-        Logger.flush();
     }
 }
