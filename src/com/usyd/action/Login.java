@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.usyd.action;
 
 import com.usyd.page.HiddenFieldExtractor;
@@ -25,6 +24,7 @@ public abstract class Login extends Action {
     public HttpClient getHttpclient() {
         try {
             this.httpClient = new HttpClient();
+            //this.httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
             String rsp = refresh();
             updateViewState(rsp);
         } catch (IOException ex) {
@@ -33,6 +33,13 @@ public abstract class Login extends Action {
     }
 
     protected abstract String refresh() throws IOException;
+
+
+    protected abstract String getSbService();
+
+    protected abstract String getDefault();
+
+    protected abstract String getAa(String link);
 
     public String getXFORMSESSSTATE() {
         return _XFORMSESSSTATE;
@@ -50,7 +57,7 @@ public abstract class Login extends Action {
         this._XFORMSTATE = _XFORMSTATE;
     }
 
-    public void updateViewState(String rsp){
+    public void updateViewState(String rsp) {
         HiddenFieldExtractor extractor = new HiddenFieldExtractor(rsp);
         extractor.loadInput();
         _XFORMSESSSTATE = extractor.getValueByName("_XFORMSESSSTATE");

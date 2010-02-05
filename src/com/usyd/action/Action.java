@@ -4,6 +4,7 @@
  */
 package com.usyd.action;
 
+import com.usyd.log.Logger;
 import com.usyd.util.PageLoader;
 import java.io.IOException;
 import org.apache.commons.httpclient.Header;
@@ -21,6 +22,7 @@ public abstract class Action {
 protected HttpClient httpClient;
 
     protected String getPostContent(String url, NameValuePair[] data) {
+        Logger.log("Post: " + url + "\n");
         PostMethod post = new PostMethod(url);
         post.setRequestBody(data);
         post.setRequestHeader(new Header("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.7) Gecko/20100106 Ubuntu/9.10 (karmic) Firefox/3.5.7"));
@@ -29,17 +31,21 @@ protected HttpClient httpClient;
         } catch (IOException ex) {
         }
         String rsp = PageLoader.getPage(post);
-
+        Logger.log("done!\n");
         return rsp;
     }
 
     protected String getGetContent(String url) {
+
+
+        Logger.log("Get: " + url + "\n");
         GetMethod get = new GetMethod(url);
         try {
             httpClient.executeMethod(get);
         } catch (IOException ex) {
         }
         String rsp = PageLoader.getPage(get);
+        Logger.log("done!\n");
         return rsp;
     }
 }

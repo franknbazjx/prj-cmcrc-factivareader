@@ -5,11 +5,9 @@
 package com.usyd.action;
 
 import com.usyd.log.Logger;
-import com.usyd.page.HiddenFieldExtractor;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 
 /**
@@ -35,7 +33,6 @@ public class LoginUNSW extends Login {
     @Override
     protected String refresh() throws IOException {
 
-        httpClient = new HttpClient();
         String url = "http://sfx.nun.unsw.edu.au/V/?func=find-db-1-locate&mode=locate&format=001&F-IDN=NSW00645";
         String rsp = this.getGetContent(url);
 
@@ -117,5 +114,23 @@ public class LoginUNSW extends Login {
         Logger.log("finished!" + "\n\n");
 
         return rsp;
+    }
+
+    @Override
+    protected String getSbService() {
+        return "http://global.factiva.com/sb/sbservice.aspx";
+    }
+
+    @Override
+    protected String getDefault() {
+return "http://global.factiva.com/ha/default.aspx";
+
+
+    }
+
+    @Override
+    protected String getAa(String link) {
+return "http://global.factiva.com/aa/?" + link;
+
     }
 }

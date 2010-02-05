@@ -22,8 +22,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
  * @author yy
  */
 public class LoginUSYD extends Login {
+
     private String user;
     private String pass;
+
     public LoginUSYD(String user, String pass) {
         super();
         this.user = user;
@@ -88,7 +90,7 @@ public class LoginUSYD extends Login {
 
     private String login(String user, String pass, String para, String url, String referer) throws IOException {
         url = "https://login.ezproxy1.library.usyd.edu.au/login";//force to use this https
-        para += "&user=>"+user + "&pass=>"+pass;
+        para += "&user=>" + user + "&pass=>" + pass;
         PostMethod post = new PostMethod(url);
         post.getParams().setCookiePolicy(CookiePolicy.NETSCAPE);// need this line to login into usyd
         String[] paras = para.split("&");
@@ -220,5 +222,20 @@ public class LoginUSYD extends Login {
             }
         }
         return newuri;
+    }
+
+    @Override
+    protected String getSbService() {
+        return "http://global.factiva.com.ezproxy1.library.usyd.edu.au/sb/sbservice.aspx";
+    }
+
+    @Override
+    protected String getDefault() {
+        return "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
+    }
+
+    @Override
+    protected String getAa(String link) {
+        return "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
     }
 }
