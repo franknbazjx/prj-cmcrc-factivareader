@@ -18,12 +18,12 @@ public abstract class Login extends Action {
     private String _XFORMSTATE;
 
     public Login() {
-        httpClient = new HttpClient();
     }
 
     public HttpClient getHttpclient() {
         try {
             this.httpClient = new HttpClient();
+            httpClient.getParams().setConnectionManagerTimeout(30000);
             //this.httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
             String rsp = refresh();
             updateViewState(rsp);

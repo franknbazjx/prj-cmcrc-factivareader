@@ -45,9 +45,6 @@ public class FactivaSearch extends Action {
         return login;
     }
 
-    public HttpClient getHttpClient() {
-        return httpClient;
-    }
 
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
