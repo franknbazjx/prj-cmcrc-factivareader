@@ -23,7 +23,8 @@ public abstract class Login extends Action {
     public HttpClient getHttpclient() {
         try {
             this.httpClient = new HttpClient();
-            httpClient.getParams().setConnectionManagerTimeout(30000);
+            //httpClient.getParams().setConnectionManagerTimeout(20000);
+            //httpClient.getHttpConnectionManager().getParams().setSoTimeout(30000);
             //this.httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
             String rsp = refresh();
             updateViewState(rsp);

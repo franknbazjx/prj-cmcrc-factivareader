@@ -4,6 +4,7 @@
  */
 package com.usyd.action;
 
+import com.usyd.exception.TimeOutException;
 import com.usyd.log.Logger;
 import com.usyd.util.PageLoader;
 import java.io.IOException;
@@ -23,34 +24,47 @@ public abstract class Action {
 
     protected String getPostContent(String url, NameValuePair[] data) {
 
-        //Logger.log("Post: " + url + "\n");
+        System.out.println("Post: " + url + "");
         PostMethod post = new PostMethod(url);
         post.setRequestBody(data);
         post.setRequestHeader(new Header("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.7) Gecko/20100106 Ubuntu/9.10 (karmic) Firefox/3.5.7"));
         try {
             httpClient.executeMethod(post);
+            System.out.println("execute done!");
             String rsp = PageLoader.getPage(post);
-            //Logger.log("done!\n");
+            System.out.println("load done!");
             return rsp;
         } catch (IOException ex) {
             Logger.log("##\ttimeout!\n");
             return "";
+        } catch (TimeOutException toe){
+             Logger.log("??\ttimeout!\n");
+            return "";
+        } finally{
+            post.releaseConnection();
+            System.out.println("release connection\n");
         }
     }
 
     protected String getGetContent(String url) {
 
-
-        //Logger.log("Get: " + url + "\n");
+        System.out.println("Get: " + url + "");
         GetMethod get = new GetMethod(url);
         try {
             httpClient.executeMethod(get);
+            System.out.println("execute done!");
             String rsp = PageLoader.getPage(get);
-            //Logger.log("done!\n");
+            System.out.println("load done!");
             return rsp;
         } catch (IOException ex) {
-            Logger.log("##\ttimeout!\n");
+            Logger.log("##\ttimeout!");
             return "";
+        } catch (TimeOutException toe){
+             Logger.log("??\ttimeout!\n");
+            return "";
+        }finally{
+            get.releaseConnection();
+            System.out.println("release connection\n");
         }
     }
 }
