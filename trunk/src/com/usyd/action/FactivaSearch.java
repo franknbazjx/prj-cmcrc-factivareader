@@ -124,7 +124,7 @@ public class FactivaSearch extends Action {
             Logger.log("collecting links ... ");
             extractor = new NewsListExtractor(rsp);
             numOfLinks = extractor.getNumOfNews();
-            numOfPages = numOfLinks / 100 + 1;
+            numOfPages = (numOfLinks - 1) / 100 + 1;
             currentPage = 2;
             List<String> list = extractor.getLinks();
             pageUnit.setList(list);

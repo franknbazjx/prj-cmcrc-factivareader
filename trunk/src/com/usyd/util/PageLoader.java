@@ -4,10 +4,10 @@
  */
 package com.usyd.util;
 
-import com.usyd.exception.TimeOutException;
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
@@ -17,32 +17,31 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public class PageLoader {
 
-    static final long TIME_OUT = 60000;
+    private static String getStringFromStream(InputStream is) throws IOException {
 
-    private static String getStringFromStream(InputStream is) throws IOException, TimeOutException {
-        int bytesRead = 0;
-        byte[] buffer = new byte[256];
         StringBuffer sb = new StringBuffer();
-        InputStream bis = new BufferedInputStream(is);
-        long startTime = System.currentTimeMillis();
-        while ((bytesRead = bis.read(buffer)) != -1) {
-            if(System.currentTimeMillis() - startTime > TIME_OUT){
-                throw new TimeOutException();
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+
             }
-            String chunk = new String(buffer, 0, bytesRead);
-            sb.append(chunk);
+            is.close();
+        } catch (IOException ioe) {
         }
         return sb.toString();
     }
 
-    public static String getPage(GetMethod get) throws IOException, TimeOutException {
+    public static String getPage(GetMethod get) throws IOException {
 
         InputStream is = null;
         is = get.getResponseBodyAsStream();
         return getStringFromStream(is);
     }
 
-    public static String getPage(PostMethod post) throws IOException, TimeOutException {
+    public static String getPage(PostMethod post) throws IOException {
         InputStream is = null;
         is = post.getResponseBodyAsStream();
         return getStringFromStream(is);
