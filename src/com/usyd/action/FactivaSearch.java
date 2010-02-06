@@ -19,7 +19,6 @@ import com.usyd.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 
 /**
@@ -39,8 +38,8 @@ public class FactivaSearch extends Action {
     private ArgumentUnit argument;
 
     public FactivaSearch(ArgumentUnit argument, String user, String pass) {
-        //this.login = new LoginUSYD(user, pass);
-        this.login = new LoginUNSW();
+        this.login = new LoginUSYD(user, pass);
+        //this.login = new LoginUNSW();
         this.httpClient = login.getHttpclient();
         this.argument = argument;
     }
@@ -49,9 +48,6 @@ public class FactivaSearch extends Action {
         return login;
     }
 
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
 
     public CompanyUnit getCompanyName(String code, String ticker, String company, boolean fuzzy) {
 
@@ -60,8 +56,6 @@ public class FactivaSearch extends Action {
         int sleep = 1;
         while (true) {
             String _xformsessstate = login.getXFORMSESSSTATE();
-            String rsp;
-
             String url = login.getSbService();
             //  String url = "http://global.factiva.com/sb/sbservice.aspx";
             //  String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/sb/sbservice.aspx";
@@ -73,7 +67,7 @@ public class FactivaSearch extends Action {
                 new NameValuePair("iType", "co"),
                 new NameValuePair("query", company),};
 
-            rsp = this.getPostContent(url, data);
+            String rsp = this.getPostContent(url, data);
 
             CompanyNameExtractor extractor = new CompanyNameExtractor(rsp);
             unit = extractor.loadCompanyName(company, fuzzy);
@@ -147,19 +141,16 @@ public class FactivaSearch extends Action {
 
                 login.updateViewState(rsp);
                 //  update viewstate for each page change;
-
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
                         login.getXFORMSTATE(), (currentPage - 1) * 100, numOfLinks);
-
                 String url = login.getDefault();
                 //String url = "http://global.factiva.com/ha/default.aspx";
                 //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
+                
                 rsp = this.getPostContent(url, data);
                 extractor = new NewsListExtractor(rsp);
 
-
-
-                if (extractor.isErrorPage() || extractor.isTwoExpressionError()) {
+                if (rsp.equals("") || extractor.isErrorPage() || extractor.isTwoExpressionError()) {
                     /*
                      *  Normally then the program reaches here, it means the
                      *  Server has detected the abnomoral client behaviour
@@ -168,13 +159,13 @@ public class FactivaSearch extends Action {
                      *  return to the Callee can let the Callee re-launch the
                      *  Probing is necessary
                      */
-                    Logger.log("\n============== Turning Page Error at page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+                    Logger.log("\n============== Turning Page Error at page [" + pageUnit.getCurrentPage() + "] ========================\n");
                     Logger.error(rsp);
                     return;
                 } else {
                     List<String> newsList = extractor.getLinks();
                     if (newsList.size() == 0) {
-                        Logger.error("\n============== Empty Page Error at page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+                        Logger.error("\n============== Empty Page Error at page [" + pageUnit.getCurrentPage() + "] ========================\n");
                         Logger.error(rsp);
                     } else {
                         for (String str : newsList) {
@@ -227,13 +218,11 @@ public class FactivaSearch extends Action {
         NameValuePair[] data = FileLoader.getPostValues(argument.getDatePairs(), login.getXFORMSESSSTATE(),
                 login.getXFORMSTATE(), _COMPANY_NAME);
 
-
+        List<DatePairs> dateList = this.getDateList(url, data);
         /*
-         *  Test if the page number exceeds 100;
+         *  If the page number exceeds 100;
          *  if it does, divide the datePairs
          */
-
-        List<DatePairs> dateList = this.getDateList(url, data);
 
         PageUnit mainPageUnit = new PageUnit();
 
@@ -283,7 +272,8 @@ public class FactivaSearch extends Action {
                 newsPage = newsPage.replaceAll("\r\n", "");
                 // format the page
                 NewsItemExtractor extractor = new NewsItemExtractor(newsPage);
-                if (extractor.isErrorPage()) {
+
+                if (newsPage.equals("") || extractor.isErrorPage()) {
                     sleep = reset(sleep);
                     continue;
                 } else {
@@ -322,10 +312,8 @@ public class FactivaSearch extends Action {
             Logger.log("WARNING: no connection available, mission failed, reset the timer!\n");
             time = 1;
         }
-        String text1 = "\nNOTICE: The server has blocked this token ..." + "\n";
         String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
 
-        Logger.log(text1);
         Logger.log(text2);
 
         try {
@@ -343,7 +331,6 @@ public class FactivaSearch extends Action {
         List<SearchUnit> searchList = FileLoader.filter(argument.getCompanyList(), fuzzy);
 
 //        filter out finished projects
-
 
         for (SearchUnit searchUnit : searchList) {
 
