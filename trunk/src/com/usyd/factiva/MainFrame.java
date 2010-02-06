@@ -8,6 +8,8 @@ package com.usyd.factiva;
 import com.usyd.log.Appender;
 import com.usyd.log.ProgressUpdater;
 import com.usyd.action.FactivaSearch;
+import com.usyd.unit.ArgumentUnit;
+import com.usyd.unit.DatePairs;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -228,7 +230,10 @@ public class MainFrame extends javax.swing.JFrame {
 
             @Override
             public String doInBackground() throws InterruptedException {
-                FactivaSearch search = new FactivaSearch(companies, user,pass);
+                ArgumentUnit argument = new ArgumentUnit();
+                argument.setCompanyList(companies);
+                argument.setDatePairs(new DatePairs(1980, 1, 1, 2008, 12, 31));
+                FactivaSearch search = new FactivaSearch(argument, user,pass);
                 search.start(jCheckBox1.isSelected());
                 return null;
             }

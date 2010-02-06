@@ -10,6 +10,9 @@ import com.usyd.unit.NewsUnit;
 import com.usyd.page.CompanyNameExtractor;
 import com.usyd.page.NewsItemExtractor;
 import com.usyd.page.NewsListExtractor;
+import com.usyd.unit.ArgumentUnit;
+import com.usyd.unit.DatePairs;
+import com.usyd.unit.PageUnit;
 import com.usyd.unit.SearchUnit;
 import com.usyd.util.FileLoader;
 import com.usyd.util.StringUtil;
@@ -25,7 +28,6 @@ import org.apache.commons.httpclient.NameValuePair;
  */
 public class FactivaSearch extends Action {
 
-
     /*
      *  Pre-condition: 'LoginUNSW'
      *
@@ -33,18 +35,19 @@ public class FactivaSearch extends Action {
      *  2.  Authentication has been setup.
      */
     private Login login;
-    private List<String> companyList;
+//    private List<String> companyList;
+    private ArgumentUnit argument;
 
-    public FactivaSearch(List<String> companyList,String user, String pass) {
-        this.login = new LoginUSYD(user,pass);
+    public FactivaSearch(ArgumentUnit argument, String user, String pass) {
+        //this.login = new LoginUSYD(user, pass);
+        this.login = new LoginUNSW();
         this.httpClient = login.getHttpclient();
-        this.companyList = companyList;
+        this.argument = argument;
     }
 
     public Login getLogin() {
         return login;
     }
-
 
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
@@ -95,70 +98,124 @@ public class FactivaSearch extends Action {
         return unit;
     }
 
-    public List<String> getNewsLinks(String rsp) {
+    public int getNumOfLinks(String rsp) {
+        NewsListExtractor extractor = new NewsListExtractor(rsp);
+        return extractor.getNumOfNews();
+    }
+
+    public void fillNewsLinks(String rsp, PageUnit pageUnit) {
 
 //        rsp page is an valid artical searching page;
 
-        Logger.log("collecting links ... ");
+        int numOfPages = pageUnit.getNumOfPages();
+        int currentPage = pageUnit.getCurrentPage();
+        int numOfLinks = pageUnit.getNumOfLinks();
+        NewsListExtractor extractor;
 
-        NewsListExtractor extractor = new NewsListExtractor(rsp);
-        int numOfItems = extractor.getNumOfNews();
-        int numOfPages = numOfItems / 100 + 1;
-        int currentPage = 2;
+        if (currentPage == 0) {
+            /*
+             * For every new Searching Action, in the first returnning page,
+             * a number of data will be captured:
+             *
+             * 1. The total number of news links
+             * 2. The links in the first page
+             * 3. The total number of pages will be computed dynamically
+             *
+             * This procedure only happends when the program launch a probing for
+             * the first time. It means if the links collecting procedure was interrupted,
+             * when the program tried to re-fill the pageUnit, this procedure will be
+             * skipped, and pageUnit filling will continue instead of doing repeated work.
+             */
 
-        List<String> list = extractor.getLinks();
+            Logger.log("collecting links ... ");
+            extractor = new NewsListExtractor(rsp);
+            numOfLinks = extractor.getNumOfNews();
+            numOfPages = numOfLinks / 100 + 1;
+            currentPage = 2;
+            List<String> list = extractor.getLinks();
+            pageUnit.setList(list);
+            pageUnit.setNumOfLinks(numOfLinks);
+            pageUnit.setNumOfPages(numOfPages);
+            pageUnit.setCurrentPage(currentPage);
+        }
 
         while (currentPage <= numOfPages) {
 
-            int sleep = 1;
+            Logger.log("\n============== Continue with page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+
             while (true) {
 
                 login.updateViewState(rsp);
                 //  update viewstate for each page change;
 
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
-                        login.getXFORMSTATE(), (currentPage - 1) * 100, numOfItems);
+                        login.getXFORMSTATE(), (currentPage - 1) * 100, numOfLinks);
 
                 String url = login.getDefault();
                 //String url = "http://global.factiva.com/ha/default.aspx";
-
                 //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
                 rsp = this.getPostContent(url, data);
-
                 extractor = new NewsListExtractor(rsp);
 
-                if (extractor.isErrorPage() || extractor.isTwoExpressionError()) {
 
-                    sleep = reset(sleep);
-                    if (sleep > 300) {
-                        Logger.log("\n============== Turning Response Error ========================\n");
-                        return null;
-                    }
+
+                if (extractor.isErrorPage() || extractor.isTwoExpressionError()) {
+                    /*
+                     *  Normally then the program reaches here, it means the
+                     *  Server has detected the abnomoral client behaviour
+                     *
+                     *  Since the Turning Page action is not stateless, thus
+                     *  return to the Callee can let the Callee re-launch the
+                     *  Probing is necessary
+                     */
+                    Logger.log("\n============== Turning Page Error at page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+                    Logger.error(rsp);
+                    return;
                 } else {
                     List<String> newsList = extractor.getLinks();
-
                     if (newsList.size() == 0) {
-                        Logger.error("\n============== Turning Page Error ========================\n");
+                        Logger.error("\n============== Empty Page Error at page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
                         Logger.error(rsp);
+                    } else {
+                        for (String str : newsList) {
+                            pageUnit.add(str);
+                        }
+                        break;
                     }
-                    for (String str : newsList) {
-                        list.add(str);
-                    }
-                    break;
                 }
             }
             currentPage++;
+            pageUnit.setCurrentPage(currentPage);
         }
-        Logger.log("expected: " + numOfItems + " ");
+        pageUnit.setFinish();
+    }
 
-        return list;
+    private List<DatePairs> getDateList(String url, NameValuePair[] data) {
+        List<DatePairs> dateList = new ArrayList<DatePairs>();
+        int sleep = 1;
+        while (true) {
+            String rsp = this.getPostContent(url, data);
+            NewsListExtractor extractor = new NewsListExtractor(rsp);
+            if (!extractor.isErrorPage()) {
+                int links = getNumOfLinks(rsp);
+                Logger.log("expected: " + links + " ");
+                if (links > 9999) {
+                    Logger.log("page number exceeds limitation, divide and conque\n");
+                    dateList = argument.divide();
+                } else {
+                    dateList.add(argument.getDatePairs());
+                }
+                break;
+            } else {
+                sleep = reset(sleep);
+            }
+        }
+        return dateList;
     }
 
     public void getNewsByCompany(CompanyUnit unit, StringBuffer buffer) {
 
         List<NewsUnit> output = new ArrayList<NewsUnit>();
-        List<String> newsList = new ArrayList();
-        
         String url = login.getDefault();
 //        String url = "http://global.factiva.com/ha/default.aspx";
 //        String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
@@ -167,38 +224,59 @@ public class FactivaSearch extends Action {
         String _COMPANY_NAME = "[{30:0,5:\""
                 + unit.getShortName().trim() + "\",29:0,28:\""
                 + unit.getFullName().trim() + "\",33:0,21:0,20:0}]";
-        NameValuePair[] data = FileLoader.getPostValues(login.getXFORMSESSSTATE(),
+        NameValuePair[] data = FileLoader.getPostValues(argument.getDatePairs(), login.getXFORMSESSSTATE(),
                 login.getXFORMSTATE(), _COMPANY_NAME);
 
-        int sleep = 1;
-        while (true) {
 
-            String rsp = this.getPostContent(url, data);
-            NewsListExtractor extractor = new NewsListExtractor(rsp);
-            if (!extractor.isErrorPage()) {
-                newsList = this.getNewsLinks(rsp);
-                if (newsList == null) {
-                    continue;
+        /*
+         *  Test if the page number exceeds 100;
+         *  if it does, divide the datePairs
+         */
+
+        List<DatePairs> dateList = this.getDateList(url, data);
+
+        PageUnit mainPageUnit = new PageUnit();
+
+        for (DatePairs datePairs : dateList) {
+            Logger.log("Collecting links " + datePairs.show() + "\n");
+            data = FileLoader.getPostValues(datePairs, login.getXFORMSESSSTATE(),
+                    login.getXFORMSTATE(), _COMPANY_NAME);
+            int sleep = 1;
+            PageUnit pageUnit = new PageUnit();
+            //  links carrier
+            while (true) {
+
+                String rsp = this.getPostContent(url, data);
+                NewsListExtractor extractor = new NewsListExtractor(rsp);
+                if (!extractor.isErrorPage()) {
+                    fillNewsLinks(rsp, pageUnit);
+                    if (!pageUnit.isFinished()) {
+                        //  links fetching interrupted
+                        Logger.log("too many pages, sleep for 30 secs\n");
+                        reset(30);
+                        continue;
+                    } else {
+                        Logger.log("collected: " + pageUnit.size() + "\n\n");
+                        break;
+                    }
                 } else {
-                    Logger.log("collected: " + newsList.size() + "\n\n");
-                    break;
+                    sleep = reset(sleep);
                 }
-            } else {
-                sleep = reset(sleep);
             }
+            mainPageUnit.concat(pageUnit.getList());
         }
 
+        Logger.log("start processing " + mainPageUnit.size() + " links\n\n");
+
         int counter = 1;
-        for (String link : newsList) {
+        for (String link : mainPageUnit.getList()) {
 
-            // open each articles
-
+            // open each article links
             url = login.getAa(link);
-
 //            url = "http://global.factiva.com/aa/?" + link;
 //            url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
 
-            sleep = 1;
+            int sleep = 1;
             while (true) {
 
                 String newsPage = this.getGetContent(url);
@@ -212,12 +290,11 @@ public class FactivaSearch extends Action {
 
                     NewsUnit item = new NewsUnit(url);
                     item = extractor.getNews(item);
-
                     if (item != null) {
                         Logger.log("------" + counter + "------\n"
                                 + "Retrieving: " + item.getTitle() + " | "
                                 + item.getDate() + "\n" + "\n");
-                        Logger.updateProgress(newsList.size(), counter, unit.getSearchName());
+                        Logger.updateProgress(mainPageUnit.size(), counter, unit.getSearchName());
                         output.add(item);
 
                     } else {
@@ -260,15 +337,11 @@ public class FactivaSearch extends Action {
         return time * 2;
     }
 
-
-
-
-
     public void start(boolean fuzzy) {
 
 
-        List<SearchUnit> searchList = FileLoader.filter(companyList, fuzzy);
-       
+        List<SearchUnit> searchList = FileLoader.filter(argument.getCompanyList(), fuzzy);
+
 //        filter out finished projects
 
 

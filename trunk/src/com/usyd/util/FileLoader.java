@@ -5,6 +5,7 @@
 package com.usyd.util;
 
 import com.usyd.log.Logger;
+import com.usyd.unit.DatePairs;
 import com.usyd.unit.SearchUnit;
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +29,7 @@ public class FileLoader {
 
 
         for (String path : paths) {
-            if(fuzzy && path.equals("emp")){
+            if (fuzzy && path.equals("emp")) {
                 continue;
             }
             File root = new File(path);
@@ -111,7 +112,7 @@ public class FileLoader {
         return nvps;
     }
 
-    public static NameValuePair[] getPostValues(String _XFORMSESSSTATE,
+    public static NameValuePair[] getPostValues(DatePairs datePairs, String _XFORMSESSSTATE,
             String _XFORMSTATE, String _COMPANY_NAME) {
         List<NameValuePair> list = new ArrayList();
         try {
@@ -132,9 +133,19 @@ public class FileLoader {
                     value = _XFORMSTATE;
                 } else if (name.equals("cos")) {
                     value = _COMPANY_NAME;
-                } else {
+                } else if (name.equals("frd")) {
+                    value = "" + datePairs.getFromD();
+                } else if (name.equals("frm")) {
+                    value = "" + datePairs.getFromM();
+                } else if (name.equals("fry")) {
+                    value = "" + datePairs.getFromY();
+                } else if (name.equals("tod")) {
+                    value = "" + datePairs.getToD();
+                } else if (name.equals("tom")) {
+                    value = "" + datePairs.getToM();
+                } else if (name.equals("toy")) {
+                    value = "" + datePairs.getToY();
                 }
-
                 NameValuePair nvp = new NameValuePair(name, value);
                 list.add(nvp);
             }
