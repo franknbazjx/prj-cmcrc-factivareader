@@ -27,6 +27,21 @@ public class NewsUnit implements Comparable {
         this.url = StringEscapeUtils.escapeXml(url);
     }
 
+    public NewsUnit(String url, String source, String title, String author,
+            String words, String date, String source_co, String doc_id, String text) {
+        this.url = url;
+        this.source = source;
+        this.title = title;
+        this.author = author;
+        this.words = words;
+        this.date = date;
+        this.source_co = source_co;
+        this.doc_id = doc_id;
+        this.text = text;
+    }
+
+    
+
     public String getAuthor() {
         return author;
     }
