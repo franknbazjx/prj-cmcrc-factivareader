@@ -4,6 +4,7 @@
  */
 package com.usyd.action;
 
+import com.usyd.exception.TimeOutException;
 import com.usyd.page.HiddenFieldExtractor;
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
@@ -21,20 +22,24 @@ public abstract class Login extends Action {
     }
 
     public HttpClient getHttpclient() {
-        try {
-            this.httpClient = new HttpClient();
-            //httpClient.getParams().setConnectionManagerTimeout(20000);
-            //httpClient.getHttpConnectionManager().getParams().setSoTimeout(30000);
-            //this.httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
-            String rsp = refresh();
-            updateViewState(rsp);
-        } catch (IOException ex) {
+        while (true) {
+            try {
+                this.httpClient = new HttpClient();
+                String rsp = refresh();
+                updateViewState(rsp);
+                break;
+            } catch (IOException ex) {
+                sleep(3);
+            } catch (TimeOutException toe) {
+                sleep(10);
+            }
         }
         return httpClient;
     }
 
-    protected abstract String refresh() throws IOException;
 
+
+    protected abstract String refresh() throws IOException, TimeOutException;
 
     protected abstract String getSbService();
 
@@ -44,6 +49,12 @@ public abstract class Login extends Action {
 
     public String getXFORMSESSSTATE() {
         return _XFORMSESSSTATE;
+    }
+
+    protected void sleep(int secs){
+        try {
+            Thread.sleep(secs * 1000);
+        } catch (InterruptedException ex) { }
     }
 
     public void setXFORMSESSSTATE(String _XFORMSESSSTATE) {

@@ -38,8 +38,8 @@ public class FactivaSearch extends Action {
     private ArgumentUnit argument;
 
     public FactivaSearch(ArgumentUnit argument, String user, String pass) {
-        this.login = new LoginUSYD(user, pass);
-        //this.login = new LoginUNSW();
+        //this.login = new LoginUSYD(user, pass);
+        this.login = new LoginUNSW();
         this.httpClient = login.getHttpclient();
         this.argument = argument;
     }
@@ -79,7 +79,7 @@ public class FactivaSearch extends Action {
                 break;
             } else if (extractor.isErrorPage()) {
 //                Reach the service quota
-                sleep = reset(sleep);
+                sleep = reset(sleep, login);
                 continue;
             } else if (unit == null && company.contains("limited")) {
 //                remove 'limited' from the compay name and try again
@@ -92,21 +92,18 @@ public class FactivaSearch extends Action {
         return unit;
     }
 
-    public int getNumOfLinks(String rsp) {
-        NewsListExtractor extractor = new NewsListExtractor(rsp);
-        return extractor.getNumOfNews();
-    }
 
-    public void fillNewsLinks(String rsp, PageUnit pageUnit) {
+
+    public void loadNewsLinks(String rsp, PageUnit pageUnit) {
 
 //        rsp page is an valid artical searching page;
 
-        int numOfPages = pageUnit.getNumOfPages();
-        int currentPage = pageUnit.getCurrentPage();
-        int numOfLinks = pageUnit.getNumOfLinks();
+        //int numOfPages = pageUnit.getNumOfPages();
+        //int currentPage = pageUnit.getCurrentPage();
+        //int numOfLinks = pageUnit.getNumOfLinks();
         NewsListExtractor extractor;
 
-        if (currentPage == 0) {
+        if (pageUnit.getCurrentPage() == 0) {
             /*
              * For every new Searching Action, in the first returnning page,
              * a number of data will be captured:
@@ -120,29 +117,27 @@ public class FactivaSearch extends Action {
              * when the program tried to re-fill the pageUnit, this procedure will be
              * skipped, and pageUnit filling will continue instead of doing repeated work.
              */
-
             Logger.log("collecting links ... ");
             extractor = new NewsListExtractor(rsp);
-            numOfLinks = extractor.getNumOfNews();
-            numOfPages = (numOfLinks - 1) / 100 + 1;
-            currentPage = 2;
+            int numOfLinks = extractor.getNumOfNews();
             List<String> list = extractor.getLinks();
             pageUnit.setList(list);
             pageUnit.setNumOfLinks(numOfLinks);
-            pageUnit.setNumOfPages(numOfPages);
-            pageUnit.setCurrentPage(currentPage);
+            pageUnit.setNumOfPages((numOfLinks - 1) / 100 + 1);
+            pageUnit.setCurrentPage(2);
         }
 
-        while (currentPage <= numOfPages) {
+        while (pageUnit.getCurrentPage() <= pageUnit.getNumOfPages()) {
 
-            Logger.log("\n============== Continue with page [" + pageUnit.getCurrentPage() + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+            Logger.log("\n============== Continue with page [" + pageUnit.getCurrentPage()
+                    + "/" + pageUnit.getNumOfPages() + "] ========================\n");
 
             while (true) {
 
                 login.updateViewState(rsp);
                 //  update viewstate for each page change;
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
-                        login.getXFORMSTATE(), (currentPage - 1) * 100, numOfLinks);
+                        login.getXFORMSTATE(), (pageUnit.getCurrentPage() - 1) * 100, pageUnit.getNumOfPages());
                 String url = login.getDefault();
                 //String url = "http://global.factiva.com/ha/default.aspx";
                 //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
@@ -159,13 +154,13 @@ public class FactivaSearch extends Action {
                      *  return to the Callee can let the Callee re-launch the
                      *  Probing is necessary
                      */
-                    Logger.log("\n============== Turning Page Error at page [" + pageUnit.getCurrentPage() + "] ========================\n");
+                    Logger.log("\n== Turning Page Error at page [" + pageUnit.getCurrentPage() + "] ==\n");
                     Logger.error(rsp);
                     return;
                 } else {
                     List<String> newsList = extractor.getLinks();
                     if (newsList.size() == 0) {
-                        Logger.error("\n============== Empty Page Error at page [" + pageUnit.getCurrentPage() + "] ========================\n");
+                        Logger.error("\n== Empty Page Error at page [" + pageUnit.getCurrentPage() + "] ==\n");
                         Logger.error(rsp);
                     } else {
                         for (String str : newsList) {
@@ -175,8 +170,7 @@ public class FactivaSearch extends Action {
                     }
                 }
             }
-            currentPage++;
-            pageUnit.setCurrentPage(currentPage);
+            pageUnit.nextPage();
         }
         pageUnit.setFinish();
     }
@@ -188,7 +182,7 @@ public class FactivaSearch extends Action {
             String rsp = this.getPostContent(url, data);
             NewsListExtractor extractor = new NewsListExtractor(rsp);
             if (!extractor.isErrorPage()) {
-                int links = getNumOfLinks(rsp);
+                int links = extractor.getNumOfNews();
                 Logger.log("expected: " + links + " ");
                 if (links > 9999) {
                     Logger.log("page number exceeds limitation, divide and conque\n");
@@ -198,7 +192,7 @@ public class FactivaSearch extends Action {
                 }
                 break;
             } else {
-                sleep = reset(sleep);
+                sleep = reset(sleep, login);
             }
         }
         return dateList;
@@ -238,18 +232,18 @@ public class FactivaSearch extends Action {
                 String rsp = this.getPostContent(url, data);
                 NewsListExtractor extractor = new NewsListExtractor(rsp);
                 if (!extractor.isErrorPage()) {
-                    fillNewsLinks(rsp, pageUnit);
+                    loadNewsLinks(rsp, pageUnit);
                     if (!pageUnit.isFinished()) {
                         //  links fetching interrupted
                         Logger.log("too many pages, sleep for 30 secs\n");
-                        reset(30);
+                        reset(30, login);
                         continue;
                     } else {
                         Logger.log("collected: " + pageUnit.size() + "\n\n");
                         break;
                     }
                 } else {
-                    sleep = reset(sleep);
+                    sleep = reset(sleep, login);
                 }
             }
             mainPageUnit.concat(pageUnit.getList());
@@ -274,7 +268,7 @@ public class FactivaSearch extends Action {
                 NewsItemExtractor extractor = new NewsItemExtractor(newsPage);
 
                 if (newsPage.equals("") || extractor.isErrorPage()) {
-                    sleep = reset(sleep);
+                    sleep = reset(sleep, login);
                     continue;
                 } else {
 
@@ -306,24 +300,7 @@ public class FactivaSearch extends Action {
         }
     }
 
-    private int reset(int time) {
 
-        if (time > 600) {
-            Logger.log("WARNING: no connection available, mission failed, reset the timer!\n");
-            time = 1;
-        }
-        String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
-
-        Logger.log(text2);
-
-        try {
-
-            Thread.sleep(time * 1000);
-            httpClient = login.getHttpclient();
-        } catch (Exception e) {
-        }
-        return time * 2;
-    }
 
     public void start(boolean fuzzy) {
 
