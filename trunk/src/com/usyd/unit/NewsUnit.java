@@ -29,15 +29,15 @@ public class NewsUnit implements Comparable {
 
     public NewsUnit(String url, String source, String title, String author,
             String words, String date, String source_co, String doc_id, String text) {
-        this.url = url;
-        this.source = source;
-        this.title = title;
-        this.author = author;
-        this.words = words;
-        this.date = date;
-        this.source_co = source_co;
-        this.doc_id = doc_id;
-        this.text = text;
+        this.url = StringEscapeUtils.escapeXml(url);
+        this.source = StringEscapeUtils.escapeXml(source);
+        this.title = StringEscapeUtils.escapeXml(title);
+        this.author = StringEscapeUtils.escapeXml(author);
+        this.words = StringEscapeUtils.escapeXml(words);
+        this.date = StringEscapeUtils.escapeXml(date);
+        this.source_co = StringEscapeUtils.escapeXml(source_co);
+        this.doc_id = StringEscapeUtils.escapeXml(doc_id);
+        this.text = StringEscapeUtils.escapeXml(text);
     }
 
     
