@@ -4,6 +4,7 @@
  */
 package com.usyd.action;
 
+import com.usyd.exception.TimeOutException;
 import com.usyd.log.Logger;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -31,7 +32,7 @@ public class LoginUNSW extends Login {
 
 
     @Override
-    protected String refresh() throws IOException {
+    protected String refresh() throws IOException, TimeOutException {
 
         String url = "http://sfx.nun.unsw.edu.au/V/?func=find-db-1-locate&mode=locate&format=001&F-IDN=NSW00645";
         String rsp = this.getGetContent(url);
@@ -42,6 +43,8 @@ public class LoginUNSW extends Login {
             url = matcher.group();
             //Logger.log("1:" + url);//https://albany.library.unsw.edu.au:443/pds?func=sso&amp;calling_system=metalib&amp;institute=UNSW&amp;url=http://sirius.library.unsw.edu.au:80/V/B61CC9GLDQQUT3UY8N9I8GNVIBXI4FUTU7U5FA889N1KCBUKKX-01117?FUNC%3DFIND%2DDB%2D1%2DLOCATE%26MODE%3Dlocate%26FORMAT%3D001%26F%2DIDN%3DNSW00645
             Logger.log("loading.");
+        } else {
+            throw new TimeOutException();
         }
 
         rsp = this.getGetContent(url);
@@ -50,6 +53,8 @@ public class LoginUNSW extends Login {
             url = "https://albany.library.unsw.edu.au:443" + matcher.group(1);
             //Logger.log("2:" + url);//https://albany.library.unsw.edu.au:443/goto/http://sirius.library.unsw.edu.au:80/V/8QSHXQP5RBANV4EJQ46GKPKA78B4MPFAI55EUL6YGH9797LFMJ-01235?FUNC=FIND-DB-1-LOCATE&MODE=locate&FORMAT=001&F-IDN=NSW00645&pds_handle=GUEST
             Logger.log(".");
+        }else {
+            throw new TimeOutException();
         }
 
         rsp = this.getGetContent(url);
@@ -60,6 +65,8 @@ public class LoginUNSW extends Login {
             url = url.replaceAll("&amp;", "&");
             //Logger.log("3:" + url);//http://sirius.library.unsw.edu.au:80/V/5KX3B3P1YKXDN854T24LTPGDQ5A4VD6U9XDQKA34MCBFYEFX3X-09086?func=native-link&amp;resource=NSW00645
             Logger.log(".");
+        }else {
+            throw new TimeOutException();
         }
 
         rsp = this.getGetContent(url);
@@ -69,6 +76,8 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("4:" + url);//http://global.factiva.com/en/sess/login.asp?xsid=S003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
+        }else {
+            throw new TimeOutException();
         }
 
         //https://viviena.library.unsw.edu.au/login?qurl=http://global.factiva.com/en/sess/login.asp%3fxsid%3dS003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
@@ -88,6 +97,8 @@ public class LoginUNSW extends Login {
             url = action;
             Logger.log(".");
             //Logger.log("5:" + url);//http://global.factiva.com/en/sess/login.asp?xsid=S003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
+        }else {
+            throw new TimeOutException();
         }
         NameValuePair[] data = {
             new NameValuePair("REMOTE_ADDR", b),
@@ -102,6 +113,8 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("6:" + url);
+        }else {
+            throw new TimeOutException();
         }
         rsp = this.getGetContent(url);
         matcher = pattern7.matcher(rsp);
@@ -109,6 +122,8 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("7:" + url);
+        }else {
+            throw new TimeOutException();
         }
         rsp = this.getGetContent(url);
         Logger.log("finished!" + "\n\n");
