@@ -74,6 +74,10 @@ public class PageUnit {
         return list.size();
     }
 
+    public void nextPage(){
+        this.currentPage ++;
+    }
+
     public void concat(List<String> conList){
         for(String str : conList){
             list.add(str);
