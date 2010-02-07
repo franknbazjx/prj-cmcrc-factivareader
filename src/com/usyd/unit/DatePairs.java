@@ -91,4 +91,9 @@ public class DatePairs {
                 " to " + this.toD + "/" + this.toM + "/" + this.toY;
     }
 
+    public String file(){
+        return this.fromD+"_"+this.fromM+"_"+this.fromY+"-"+
+                this.toD + "_" + this.toM + "_" + this.toY;
+    }
+
 }

@@ -80,6 +80,7 @@ public class Logger {
     }
 
     public static void store(String str, String fileName) {
+        System.out.println("store in " + fileName);
         write(str, new File(fileName), true);
     }
 

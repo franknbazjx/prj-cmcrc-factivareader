@@ -38,8 +38,8 @@ public class FactivaSearch extends Action {
     private ArgumentUnit argument;
 
     public FactivaSearch(ArgumentUnit argument, String user, String pass) {
-        //this.login = new LoginUSYD(user, pass);
-        this.login = new LoginUNSW();
+        this.login = new LoginUSYD(user, pass);
+        //this.login = new LoginUNSW();
         this.httpClient = login.getHttpclient();
         this.argument = argument;
     }
@@ -47,7 +47,6 @@ public class FactivaSearch extends Action {
     public Login getLogin() {
         return login;
     }
-
 
     public CompanyUnit getCompanyName(String code, String ticker, String company, boolean fuzzy) {
 
@@ -79,7 +78,7 @@ public class FactivaSearch extends Action {
                 break;
             } else if (extractor.isErrorPage()) {
 //                Reach the service quota
-                sleep = reset(sleep, login);
+                sleep = reset(sleep);
                 continue;
             } else if (unit == null && company.contains("limited")) {
 //                remove 'limited' from the compay name and try again
@@ -92,15 +91,14 @@ public class FactivaSearch extends Action {
         return unit;
     }
 
+    public int getNumOfLinks(String rsp) {
+        NewsListExtractor extractor = new NewsListExtractor(rsp);
+        return extractor.getNumOfNews();
+    }
 
-
-    public void loadNewsLinks(String rsp, PageUnit pageUnit) {
+    public void fillNewsLinks(String rsp, PageUnit pageUnit) {
 
 //        rsp page is an valid artical searching page;
-
-        //int numOfPages = pageUnit.getNumOfPages();
-        //int currentPage = pageUnit.getCurrentPage();
-        //int numOfLinks = pageUnit.getNumOfLinks();
         NewsListExtractor extractor;
 
         if (pageUnit.getCurrentPage() == 0) {
@@ -117,6 +115,7 @@ public class FactivaSearch extends Action {
              * when the program tried to re-fill the pageUnit, this procedure will be
              * skipped, and pageUnit filling will continue instead of doing repeated work.
              */
+
             Logger.log("collecting links ... ");
             extractor = new NewsListExtractor(rsp);
             int numOfLinks = extractor.getNumOfNews();
@@ -129,19 +128,19 @@ public class FactivaSearch extends Action {
 
         while (pageUnit.getCurrentPage() <= pageUnit.getNumOfPages()) {
 
-            Logger.log("\n============== Continue with page [" + pageUnit.getCurrentPage()
-                    + "/" + pageUnit.getNumOfPages() + "] ========================\n");
+            Logger.log("\n== Continue with page [" + pageUnit.getCurrentPage()
+                    + "/" + pageUnit.getNumOfPages() + "] ==\n");
 
             while (true) {
 
                 login.updateViewState(rsp);
                 //  update viewstate for each page change;
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
-                        login.getXFORMSTATE(), (pageUnit.getCurrentPage() - 1) * 100, pageUnit.getNumOfPages());
+                        login.getXFORMSTATE(), (pageUnit.getCurrentPage() - 1) * 100, pageUnit.getNumOfLinks());
                 String url = login.getDefault();
                 //String url = "http://global.factiva.com/ha/default.aspx";
                 //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
-                
+
                 rsp = this.getPostContent(url, data);
                 extractor = new NewsListExtractor(rsp);
 
@@ -182,17 +181,17 @@ public class FactivaSearch extends Action {
             String rsp = this.getPostContent(url, data);
             NewsListExtractor extractor = new NewsListExtractor(rsp);
             if (!extractor.isErrorPage()) {
-                int links = extractor.getNumOfNews();
+                int links = getNumOfLinks(rsp);
                 Logger.log("expected: " + links + " ");
-                if (links > 9999) {
-                    Logger.log("page number exceeds limitation, divide and conque\n");
+                if (links > 10) {
+                    Logger.log("page number exceeds limitation, divide and conquer\n");
                     dateList = argument.divide();
                 } else {
                     dateList.add(argument.getDatePairs());
                 }
                 break;
             } else {
-                sleep = reset(sleep, login);
+                sleep = reset(sleep);
             }
         }
         return dateList;
@@ -200,7 +199,7 @@ public class FactivaSearch extends Action {
 
     public void getNewsByCompany(CompanyUnit unit, StringBuffer buffer) {
 
-        List<NewsUnit> output = new ArrayList<NewsUnit>();
+
         String url = login.getDefault();
 //        String url = "http://global.factiva.com/ha/default.aspx";
 //        String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
@@ -218,9 +217,16 @@ public class FactivaSearch extends Action {
          *  if it does, divide the datePairs
          */
 
-        PageUnit mainPageUnit = new PageUnit();
+
+        /*
+         *  check files
+         *
+         */
+        dateList = FileLoader.tempFileFilter(dateList, unit);
 
         for (DatePairs datePairs : dateList) {
+
+            String tempFileName = datePairs.file() + "#" + unit.getSearchName() + ".xml";
             Logger.log("Collecting links " + datePairs.show() + "\n");
             data = FileLoader.getPostValues(datePairs, login.getXFORMSESSSTATE(),
                     login.getXFORMSTATE(), _COMPANY_NAME);
@@ -232,30 +238,57 @@ public class FactivaSearch extends Action {
                 String rsp = this.getPostContent(url, data);
                 NewsListExtractor extractor = new NewsListExtractor(rsp);
                 if (!extractor.isErrorPage()) {
-                    loadNewsLinks(rsp, pageUnit);
+                    fillNewsLinks(rsp, pageUnit);
                     if (!pageUnit.isFinished()) {
                         //  links fetching interrupted
                         Logger.log("too many pages, sleep for 30 secs\n");
-                        reset(30, login);
+                        reset(30);
                         continue;
                     } else {
                         Logger.log("collected: " + pageUnit.size() + "\n\n");
                         break;
                     }
                 } else {
-                    sleep = reset(sleep, login);
+                    sleep = reset(sleep);
                 }
             }
-            mainPageUnit.concat(pageUnit.getList());
+            List<NewsUnit> tempOutput = getNewsArticle(pageUnit, unit);
+            storeTempFile(tempOutput, tempFileName);
+            /*
+             * Write into Files
+             */
         }
+        List<NewsUnit> output = FileLoader.collectTempFiles();
+        Collections.sort(output);
+        for (NewsUnit news : output) {
+            String searchProfile = StringUtil.getSearchProfile(unit.getCode(),
+                    unit.getTicker(), unit.getSearchName());
+            buffer.append(searchProfile);
+            buffer.append(news.show());
+        }
+    }
 
-        Logger.log("start processing " + mainPageUnit.size() + " links\n\n");
+    private void storeTempFile(List<NewsUnit> tempOutput, String tempFileName) {
 
+        if (tempOutput.size() > 0) {
+            Logger.log("## storing " + tempFileName);
+            Logger.store("<?xml version=\"1.0\"?>", "tmp/" + tempFileName);
+            Logger.store("<ROOT>\n", "tmp/" + tempFileName);
+            for (NewsUnit news : tempOutput) {
+                Logger.store(news.show(), "tmp/" + tempFileName);
+            }
+            Logger.store("</ROOT>\n", "tmp/" + tempFileName);
+        }
+    }
+
+    private List<NewsUnit> getNewsArticle(PageUnit pageUnit, CompanyUnit unit) {
+        List<NewsUnit> output = new ArrayList<NewsUnit>();
+        Logger.log("start processing " + pageUnit.size() + " links\n\n");
         int counter = 1;
-        for (String link : mainPageUnit.getList()) {
+        for (String link : pageUnit.getList()) {
 
             // open each article links
-            url = login.getAa(link);
+            String url = login.getAa(link);
 //            url = "http://global.factiva.com/aa/?" + link;
 //            url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
 
@@ -268,7 +301,7 @@ public class FactivaSearch extends Action {
                 NewsItemExtractor extractor = new NewsItemExtractor(newsPage);
 
                 if (newsPage.equals("") || extractor.isErrorPage()) {
-                    sleep = reset(sleep, login);
+                    sleep = reset(sleep);
                     continue;
                 } else {
 
@@ -278,7 +311,7 @@ public class FactivaSearch extends Action {
                         Logger.log("------" + counter + "------\n"
                                 + "Retrieving: " + item.getTitle() + " | "
                                 + item.getDate() + "\n" + "\n");
-                        Logger.updateProgress(mainPageUnit.size(), counter, unit.getSearchName());
+                        Logger.updateProgress(pageUnit.size(), counter, unit.getSearchName());
                         output.add(item);
 
                     } else {
@@ -291,16 +324,27 @@ public class FactivaSearch extends Action {
                 }
             }
         }
-        Collections.sort(output);
-        for (NewsUnit news : output) {
-            String searchProfile = StringUtil.getSearchProfile(unit.getCode(),
-                    unit.getTicker(), unit.getSearchName());
-            buffer.append(searchProfile);
-            buffer.append(news.show());
-        }
+        return output;
     }
 
+    private int reset(int time) {
 
+        if (time > 600) {
+            Logger.log("WARNING: no connection available, mission failed, reset the timer!\n");
+            time = 1;
+        }
+        String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
+
+        Logger.log(text2);
+
+        try {
+
+            Thread.sleep(time * 1000);
+            httpClient = login.getHttpclient();
+        } catch (Exception e) {
+        }
+        return time * 2;
+    }
 
     public void start(boolean fuzzy) {
 

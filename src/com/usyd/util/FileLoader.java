@@ -5,7 +5,9 @@
 package com.usyd.util;
 
 import com.usyd.log.Logger;
+import com.usyd.unit.CompanyUnit;
 import com.usyd.unit.DatePairs;
+import com.usyd.unit.NewsUnit;
 import com.usyd.unit.SearchUnit;
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,13 +15,117 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.httpclient.NameValuePair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
  * @author yy
  */
 public class FileLoader {
+
+    public static String getValueByTag(Node fstNode, String tag) {
+
+        Element fstElmnt = (Element) fstNode;
+        NodeList fstNmElmntLst = fstElmnt.getElementsByTagName(tag);
+        Element fstNmElmnt = (Element) fstNmElmntLst.item(0);
+        NodeList fstNm = fstNmElmnt.getChildNodes();
+        if (fstNm.getLength() > 0) {
+            return ((Node) fstNm.item(0)).getNodeValue();
+        } else {
+            return "";
+        }
+    }
+
+    public static List<NewsUnit> parseXml(File file) {
+
+        List<NewsUnit> list = new ArrayList<NewsUnit>();
+
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            NodeList nodeLst = doc.getElementsByTagName("ARTICLE");
+
+
+            for (int s = 0; s < nodeLst.getLength(); s++) {
+                Node fstNode = nodeLst.item(s);
+                if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+                    String url = getValueByTag(fstNode, "URL");
+                    String source = getValueByTag(fstNode, "SOURCE");
+                    String title = getValueByTag(fstNode, "TITLE");
+                    String author = getValueByTag(fstNode, "AUTHOR");
+                    String words = getValueByTag(fstNode, "WORDS");
+                    String date = getValueByTag(fstNode, "DATE");
+                    String source_co = getValueByTag(fstNode, "SOURCE_CO");
+                    String doc_id = getValueByTag(fstNode, "DOC_ID");
+                    String text = getValueByTag(fstNode, "TEXT");
+                    NewsUnit unit = new NewsUnit(url, source, title, author,
+                            words, date, source_co, doc_id, text);
+                    list.add(unit);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static List<NewsUnit> collectTempFiles() {
+
+        String path = "tmp";
+        File root = new File(path);
+        String[] list = root.list();
+        List<NewsUnit> output = new ArrayList<NewsUnit>();
+        for (String line : list) {
+            if (line.endsWith(".xml")) {
+                Logger.log("PARSING " + line);
+                File file = new File(line);
+                List<NewsUnit> tempList = parseXml(file);
+                for(NewsUnit unit : tempList){
+                    output.add(unit);
+                }
+                file.delete();
+                Logger.log("DELETING " + line);
+            }
+        }
+        return output;
+    }
+
+    public static List<DatePairs> tempFileFilter(List<DatePairs> dateList, CompanyUnit unit) {
+//        List<File> finishedList = new File(".");
+        HashSet finished = new HashSet();
+        //String[] paths;
+        String[] paths = {"tmp"};
+
+
+        for (String path : paths) {
+            File root = new File(path);
+            String[] list = root.list();
+            for (String line : list) {
+                if (line.endsWith(".xml")) {
+                    finished.add(line);
+                }
+            }
+        }
+
+        List<DatePairs> newDateList = new ArrayList<DatePairs>();
+        for (DatePairs date : dateList) {
+            String file = date.show() + "#" + unit.getSearchName() + ".xml";
+            if (finished.contains(file)) {
+                Logger.log("SKIPPED: " + file + "\n");
+            } else {
+                newDateList.add(date);
+            }
+        }
+        return newDateList;
+    }
 
     public static List<SearchUnit> filter(List<String> companyList, boolean fuzzy) {
 //        List<File> finishedList = new File(".");

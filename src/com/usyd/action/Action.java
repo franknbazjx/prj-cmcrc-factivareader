@@ -59,23 +59,4 @@ public abstract class Action {
             System.out.println("release connection\n");
         }
     }
-
-    protected int reset(int time, Login login) {
-
-        if (time > 600) {
-            Logger.log("WARNING: no connection available, mission failed, reset the timer!\n");
-            time = 1;
-        }
-        String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
-
-        Logger.log(text2);
-
-        try {
-
-            Thread.sleep(time * 1000);
-            httpClient = login.getHttpclient();
-        } catch (Exception e) {
-        }
-        return time * 2;
-    }
 }
