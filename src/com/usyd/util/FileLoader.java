@@ -86,7 +86,7 @@ public class FileLoader {
         for (String line : list) {
             if (line.endsWith(".xml")) {
                 Logger.log("PARSING " + line);
-                File file = new File(line);
+                File file = new File("tmp/" + line);
                 List<NewsUnit> tempList = parseXml(file);
                 for(NewsUnit unit : tempList){
                     output.add(unit);
