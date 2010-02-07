@@ -117,7 +117,7 @@ public class FileLoader {
 
         List<DatePairs> newDateList = new ArrayList<DatePairs>();
         for (DatePairs date : dateList) {
-            String file = date.show() + "#" + unit.getSearchName() + ".xml";
+            String file = date.file() + "#" + unit.getSearchName() + ".xml";
             if (finished.contains(file)) {
                 Logger.log("SKIPPED: " + file + "\n");
             } else {

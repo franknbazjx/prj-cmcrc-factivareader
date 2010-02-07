@@ -270,15 +270,13 @@ public class FactivaSearch extends Action {
 
     private void storeTempFile(List<NewsUnit> tempOutput, String tempFileName) {
 
-        if (tempOutput.size() > 0) {
-            Logger.log("## storing " + tempFileName);
-            Logger.store("<?xml version=\"1.0\"?>", "tmp/" + tempFileName);
-            Logger.store("<ROOT>\n", "tmp/" + tempFileName);
-            for (NewsUnit news : tempOutput) {
-                Logger.store(news.show(), "tmp/" + tempFileName);
-            }
-            Logger.store("</ROOT>\n", "tmp/" + tempFileName);
+        Logger.log("## storing " + tempFileName);
+        Logger.store("<?xml version=\"1.0\"?>", "tmp/" + tempFileName);
+        Logger.store("<ROOT>\n", "tmp/" + tempFileName);
+        for (NewsUnit news : tempOutput) {
+            Logger.store(news.show(), "tmp/" + tempFileName);
         }
+        Logger.store("</ROOT>\n", "tmp/" + tempFileName);
     }
 
     private List<NewsUnit> getNewsArticle(PageUnit pageUnit, CompanyUnit unit) {
