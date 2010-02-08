@@ -80,6 +80,8 @@ public class LoginUNSW extends Login {
             throw new TimeOutException();
         }
 
+        httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
+
         //https://viviena.library.unsw.edu.au/login?qurl=http://global.factiva.com/en/sess/login.asp%3fxsid%3dS003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
 
         rsp = this.getGetContent(url);

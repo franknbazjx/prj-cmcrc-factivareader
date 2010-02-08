@@ -38,8 +38,9 @@ public class FactivaSearch extends Action {
     private ArgumentUnit argument;
 
     public FactivaSearch(ArgumentUnit argument, String user, String pass) {
-        this.login = new LoginUSYD(user, pass);
-        //this.login = new LoginUNSW();
+        //this.login = new LoginUSYD(user, pass);
+        //this.login = new LoginUSYDProxy(user, pass);
+        this.login = new LoginUNSW();
         this.httpClient = login.getHttpclient();
         this.argument = argument;
     }
@@ -183,7 +184,7 @@ public class FactivaSearch extends Action {
             if (!extractor.isErrorPage()) {
                 int links = getNumOfLinks(rsp);
                 Logger.log("expected: " + links + " ");
-                if (links > 10) {
+                if (links > 500) {
                     Logger.log("page number exceeds limitation, divide and conquer\n");
                     dateList = argument.divide();
                 } else {
@@ -266,6 +267,7 @@ public class FactivaSearch extends Action {
             buffer.append(searchProfile);
             buffer.append(news.show());
         }
+        FileLoader.cleanTempFiles();
     }
 
     private void storeTempFile(List<NewsUnit> tempOutput, String tempFileName) {
@@ -294,17 +296,27 @@ public class FactivaSearch extends Action {
             while (true) {
 
                 String newsPage = this.getGetContent(url);
+
+                System.out.println("1");
+
                 newsPage = newsPage.replaceAll("\r\n", "");
+
+                System.out.println("2");
                 // format the page
                 NewsItemExtractor extractor = new NewsItemExtractor(newsPage);
+
+                System.out.println("3");
 
                 if (newsPage.equals("") || extractor.isErrorPage()) {
                     sleep = reset(sleep);
                     continue;
                 } else {
 
+                    System.out.println("4");
                     NewsUnit item = new NewsUnit(url);
+                    System.out.println("5");
                     item = extractor.getNews(item);
+                    System.out.println("6");
                     if (item != null) {
                         Logger.log("------" + counter + "------\n"
                                 + "Retrieving: " + item.getTitle() + " | "
