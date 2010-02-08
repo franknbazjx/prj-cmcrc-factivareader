@@ -77,6 +77,20 @@ public class FileLoader {
         return list;
     }
 
+    public static void cleanTempFiles(){
+        String path = "tmp";
+        File root = new File(path);
+        String[] list = root.list();
+        for(String line : list){
+            if(line.endsWith(".xml")){
+                File file = new File(path + "/" + line);
+                file.delete();
+                Logger.log("DELETING " + line);
+            }
+        }
+
+    }
+
     public static List<NewsUnit> collectTempFiles() {
 
         String path = "tmp";
@@ -86,13 +100,11 @@ public class FileLoader {
         for (String line : list) {
             if (line.endsWith(".xml")) {
                 Logger.log("PARSING " + line);
-                File file = new File("tmp/" + line);
+                File file = new File(path + "/" + line);
                 List<NewsUnit> tempList = parseXml(file);
                 for(NewsUnit unit : tempList){
                     output.add(unit);
                 }
-                file.delete();
-                Logger.log("DELETING " + line);
             }
         }
         return output;
