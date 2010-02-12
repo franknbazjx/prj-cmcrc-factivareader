@@ -197,6 +197,7 @@ public class MainFrame extends javax.swing.JFrame {
                 StringBuffer lines = new StringBuffer();
                 companies = new ArrayList<String>();
                 while ((line = rd.readLine()) != null) {
+                    line.replaceAll("/", "|");
                     companies.add(line);
                     lines.append(line);
                     lines.append(System.getProperty("line.separator"));
@@ -233,7 +234,9 @@ public class MainFrame extends javax.swing.JFrame {
                 ArgumentUnit argument = new ArgumentUnit();
                 argument.setCompanyList(companies);
                 argument.setDatePairs(new DatePairs(1980, 1, 1, 2008, 12, 31));
-                FactivaSearch search = new FactivaSearch(argument, user,pass);
+                argument.setUser(user);
+                argument.setPass(pass);
+                FactivaSearch search = new FactivaSearch(argument);
                 search.start(jCheckBox1.isSelected());
                 return null;
             }

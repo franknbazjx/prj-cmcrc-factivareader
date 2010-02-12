@@ -85,7 +85,7 @@ public class FileLoader {
             if(line.endsWith(".xml")){
                 File file = new File(path + "/" + line);
                 file.delete();
-                Logger.log("DELETING " + line);
+                Logger.log("DELETING " + line + "\n");
             }
         }
 
@@ -99,7 +99,7 @@ public class FileLoader {
         List<NewsUnit> output = new ArrayList<NewsUnit>();
         for (String line : list) {
             if (line.endsWith(".xml")) {
-                Logger.log("PARSING " + line);
+                Logger.log("PARSING " + line + "\n");
                 File file = new File(path + "/" + line);
                 List<NewsUnit> tempList = parseXml(file);
                 for(NewsUnit unit : tempList){

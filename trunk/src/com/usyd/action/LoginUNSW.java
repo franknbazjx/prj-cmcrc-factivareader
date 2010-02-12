@@ -24,12 +24,12 @@ public class LoginUNSW extends Login {
     private Pattern pattern5 = Pattern.compile("form.*action\\s*=\\s*['\"]([^'\"]*).*'REMOTE_ADDR' value='([^']*)'.*'HTTP_REFERER' value='([^']*)'.*'TargetSite' value='([^']*)'.*'InterfaceLanguage' value='([^']*).*'LandingPage' value='([^']*)'.*'ReferedSite' value='([^']*)'.*", Pattern.CASE_INSENSITIVE);
     private Pattern pattern6 = Pattern.compile("\\.action\\s*=\\s*['\"]([^'\"]*)", Pattern.CASE_INSENSITIVE);
     private Pattern pattern7 = Pattern.compile("form.*action\\s*=\\s*['\"]([^'\"]*)", Pattern.CASE_INSENSITIVE);
+    private boolean proxy;
 
-
-    public LoginUNSW() {
+    public LoginUNSW(boolean proxy) {
         super();
+        this.proxy = proxy;
     }
-
 
     @Override
     protected String refresh() throws IOException, TimeOutException {
@@ -53,7 +53,7 @@ public class LoginUNSW extends Login {
             url = "https://albany.library.unsw.edu.au:443" + matcher.group(1);
             //Logger.log("2:" + url);//https://albany.library.unsw.edu.au:443/goto/http://sirius.library.unsw.edu.au:80/V/8QSHXQP5RBANV4EJQ46GKPKA78B4MPFAI55EUL6YGH9797LFMJ-01235?FUNC=FIND-DB-1-LOCATE&MODE=locate&FORMAT=001&F-IDN=NSW00645&pds_handle=GUEST
             Logger.log(".");
-        }else {
+        } else {
             throw new TimeOutException();
         }
 
@@ -65,7 +65,7 @@ public class LoginUNSW extends Login {
             url = url.replaceAll("&amp;", "&");
             //Logger.log("3:" + url);//http://sirius.library.unsw.edu.au:80/V/5KX3B3P1YKXDN854T24LTPGDQ5A4VD6U9XDQKA34MCBFYEFX3X-09086?func=native-link&amp;resource=NSW00645
             Logger.log(".");
-        }else {
+        } else {
             throw new TimeOutException();
         }
 
@@ -76,12 +76,13 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("4:" + url);//http://global.factiva.com/en/sess/login.asp?xsid=S003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
-        }else {
+        } else {
             throw new TimeOutException();
         }
 
-        httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
-
+        if (proxy) {
+            httpClient.getHostConfiguration().setProxy("www-proxy.cse.unsw.edu.au", 3128);
+        }
         //https://viviena.library.unsw.edu.au/login?qurl=http://global.factiva.com/en/sess/login.asp%3fxsid%3dS003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
 
         rsp = this.getGetContent(url);
@@ -99,7 +100,7 @@ public class LoginUNSW extends Login {
             url = action;
             Logger.log(".");
             //Logger.log("5:" + url);//http://global.factiva.com/en/sess/login.asp?xsid=S003Wvp3sEmMXmnOHmnMDMnODatODIp5DByWcNGOTNHYdNZUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEA
-        }else {
+        } else {
             throw new TimeOutException();
         }
         NameValuePair[] data = {
@@ -115,7 +116,7 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("6:" + url);
-        }else {
+        } else {
             throw new TimeOutException();
         }
         rsp = this.getGetContent(url);
@@ -124,7 +125,7 @@ public class LoginUNSW extends Login {
             url = matcher.group(1);
             Logger.log(".");
             //Logger.log("7:" + url);
-        }else {
+        } else {
             throw new TimeOutException();
         }
         rsp = this.getGetContent(url);
@@ -140,14 +141,14 @@ public class LoginUNSW extends Login {
 
     @Override
     protected String getDefault() {
-return "http://global.factiva.com/ha/default.aspx";
+        return "http://global.factiva.com/ha/default.aspx";
 
 
     }
 
     @Override
     protected String getAa(String link) {
-return "http://global.factiva.com/aa/?" + link;
+        return "http://global.factiva.com/aa/?" + link;
 
     }
 }

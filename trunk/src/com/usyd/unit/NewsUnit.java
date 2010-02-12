@@ -40,8 +40,6 @@ public class NewsUnit implements Comparable {
         this.text = StringEscapeUtils.escapeXml(text);
     }
 
-    
-
     public String getAuthor() {
         return author;
     }
@@ -57,7 +55,7 @@ public class NewsUnit implements Comparable {
     public void setAuthor(String author) {
         author = author.replaceFirst("^By[\\s]+", "");
         author = author.replaceFirst("\\.$", "");
-        this.author = author.trim();
+        this.author = StringEscapeUtils.escapeXml(author.trim());
     }
 
     public String getDoc_id() {
