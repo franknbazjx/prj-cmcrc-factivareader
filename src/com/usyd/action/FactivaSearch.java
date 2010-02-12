@@ -37,10 +37,11 @@ public class FactivaSearch extends Action {
 //    private List<String> companyList;
     private ArgumentUnit argument;
 
-    public FactivaSearch(ArgumentUnit argument, String user, String pass) {
-        //this.login = new LoginUSYD(user, pass);
-        //this.login = new LoginUSYDProxy(user, pass);
-        this.login = new LoginUNSW();
+    public FactivaSearch(ArgumentUnit argument) {
+        //this.login = new LoginUSYD(argument.getUser(), argument.getPass());
+        //this.login = new LoginUSYDProxy(argument.getUser(), argument.getPass());
+        //this.login = new LoginUNSW(true);
+        this.login = new LoginUNSW(false);
         this.httpClient = login.getHttpclient();
         this.argument = argument;
     }
