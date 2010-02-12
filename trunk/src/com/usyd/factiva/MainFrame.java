@@ -8,6 +8,7 @@ package com.usyd.factiva;
 import com.usyd.log.Appender;
 import com.usyd.log.ProgressUpdater;
 import com.usyd.action.FactivaSearch;
+import com.usyd.type.LoginType;
 import com.usyd.unit.ArgumentUnit;
 import com.usyd.unit.DatePairs;
 import java.io.BufferedReader;
@@ -46,6 +47,8 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
+        argument = new ArgumentUnit();
+        argument.setType((LoginType) proxyComboBox.getSelectedItem());
         com.usyd.log.Logger.registerAppender(new Appender() {
 
             public void append(final String msg) {
@@ -105,6 +108,8 @@ public class MainFrame extends javax.swing.JFrame {
         startBtn = new javax.swing.JButton();
         pBar = new javax.swing.JProgressBar();
         jCheckBox1 = new javax.swing.JCheckBox();
+        proxyComboBox = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Factiva");
@@ -157,22 +162,39 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        proxyComboBox.setModel(new javax.swing.DefaultComboBoxModel(new LoginType[] { LoginType.USYD, LoginType.USYDPROXY, LoginType.UNSW, LoginType.UNSWPROXY }));
+        proxyComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                proxyComboBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Proxy:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -186,7 +208,6 @@ public class MainFrame extends javax.swing.JFrame {
         FileFilter filter = new FileNameExtensionFilter("csv files", "csv");
         fileopen.addChoosableFileFilter(filter);
         fileopen.setCurrentDirectory(new File("."));
-
         int ret = fileopen.showDialog(this, "Open file");
 
         if (ret == JFileChooser.APPROVE_OPTION) {
@@ -212,18 +233,26 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_openBtnActionPerformed
     SwingWorker worker;
     private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        PasswordPanel passPanel = new PasswordPanel();
-        int action = JOptionPane.showConfirmDialog(null, passPanel, "Enter User Name and Password", JOptionPane.OK_CANCEL_OPTION);
-        if (action < 0) {
-            return;
-        } else {
-            user = passPanel.getUser();
-            pass = passPanel.getPassword();
-            if (user.trim().length() == 0 || pass.trim().length() == 0) {
+
+        if (argument.getType().getCode() == LoginType.USYD.getCode()
+                || argument.getType().getCode() == LoginType.USYDPROXY.getCode()) {
+            PasswordPanel passPanel = new PasswordPanel();
+            int action = JOptionPane.showConfirmDialog(null, passPanel, "Enter User Name and Password", JOptionPane.OK_CANCEL_OPTION);
+            if (action < 0) {
                 return;
+            } else {
+                user = passPanel.getUser();
+                pass = passPanel.getPassword();
+                if (user.trim().length() == 0 || pass.trim().length() == 0) {
+                    return;
+                }
             }
+        } else {
+            user = "";
+            pass = "";
         }
 
+        proxyComboBox.setEnabled(false);
         startBtn.setEnabled(false);
         pBar.setStringPainted(true);
 
@@ -231,7 +260,6 @@ public class MainFrame extends javax.swing.JFrame {
 
             @Override
             public String doInBackground() throws InterruptedException {
-                ArgumentUnit argument = new ArgumentUnit();
                 argument.setCompanyList(companies);
                 argument.setDatePairs(new DatePairs(1980, 1, 1, 2008, 12, 31));
                 argument.setUser(user);
@@ -248,16 +276,24 @@ public class MainFrame extends javax.swing.JFrame {
         };
         worker.execute();
     }//GEN-LAST:event_startBtnActionPerformed
+
+    private void proxyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proxyComboBoxActionPerformed
+        // TODO add your handling code here:
+        argument.setType((LoginType) proxyComboBox.getSelectedItem());
+    }//GEN-LAST:event_proxyComboBoxActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton openBtn;
     private javax.swing.JProgressBar pBar;
+    private javax.swing.JComboBox proxyComboBox;
     private javax.swing.JButton startBtn;
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
     private File csvFile;
     private String user;
     private String pass;
+    private ArgumentUnit argument;
 }

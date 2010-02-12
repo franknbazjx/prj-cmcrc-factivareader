@@ -10,6 +10,7 @@ import com.usyd.unit.NewsUnit;
 import com.usyd.page.CompanyNameExtractor;
 import com.usyd.page.NewsItemExtractor;
 import com.usyd.page.NewsListExtractor;
+import com.usyd.type.LoginType;
 import com.usyd.unit.ArgumentUnit;
 import com.usyd.unit.DatePairs;
 import com.usyd.unit.PageUnit;
@@ -38,12 +39,11 @@ public class FactivaSearch extends Action {
     private ArgumentUnit argument;
 
     public FactivaSearch(ArgumentUnit argument) {
-        //this.login = new LoginUSYD(argument.getUser(), argument.getPass());
-        //this.login = new LoginUSYDProxy(argument.getUser(), argument.getPass());
-        //this.login = new LoginUNSW(true);
-        this.login = new LoginUNSW(false);
-        this.httpClient = login.getHttpclient();
         this.argument = argument;
+        LoginFactory lf = new LoginFactory();
+        this.login = lf.createLogin(argument.getType(), argument.getUser(), argument.getPass());
+        this.httpClient = login.getHttpclient();
+
     }
 
     public Login getLogin() {

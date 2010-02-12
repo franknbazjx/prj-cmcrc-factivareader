@@ -5,6 +5,7 @@
 
 package com.usyd.unit;
 
+import com.usyd.type.LoginType;
 import java.util.List;
 
 /**
@@ -16,6 +17,15 @@ public class ArgumentUnit {
     private DatePairs datePairs;
     private String user;
     private String pass;
+    private LoginType type;
+
+    public LoginType getType() {
+        return type;
+    }
+
+    public void setType(LoginType type) {
+        this.type = type;
+    }
 
     public String getPass() {
         return pass;
