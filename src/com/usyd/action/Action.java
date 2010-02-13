@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.NameValuePair;
  *
  * @author yy
  */
-public abstract class Action {
+public class Action {
 
     protected HttpClient httpClient;
 

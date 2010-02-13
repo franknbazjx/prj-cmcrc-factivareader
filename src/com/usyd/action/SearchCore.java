@@ -26,7 +26,7 @@ import org.apache.commons.httpclient.NameValuePair;
  *
  * @author yy
  */
-public class FactivaSearch extends Action {
+public class SearchCore extends Action {
 
     /*
      *  Pre-condition: 'LoginUNSW'
@@ -38,10 +38,10 @@ public class FactivaSearch extends Action {
 //    private List<String> companyList;
     private ArgumentUnit argument;
 
-    public FactivaSearch(ArgumentUnit argument) {
+    public SearchCore(ArgumentUnit argument) {
         this.argument = argument;
-        LoginFactory lf = new LoginFactory();
-        this.login = lf.createLogin(argument.getType(), argument.getUser(), argument.getPass());
+        this.login = new LoginFactory().createLogin(argument.getType(),
+                argument.getUser(), argument.getPass());
         this.httpClient = login.getHttpclient();
 
     }
@@ -50,7 +50,8 @@ public class FactivaSearch extends Action {
         return login;
     }
 
-    public CompanyUnit getCompanyName(String code, String ticker, String company, boolean fuzzy) {
+    private CompanyUnit getCompanyName(String code, String ticker,
+            String company, boolean fuzzy) {
 
         CompanyUnit unit = null;
 
@@ -93,12 +94,12 @@ public class FactivaSearch extends Action {
         return unit;
     }
 
-    public int getNumOfLinks(String rsp) {
+    private int getNumOfLinks(String rsp) {
         NewsListExtractor extractor = new NewsListExtractor(rsp);
         return extractor.getNumOfNews();
     }
 
-    public void fillNewsLinks(String rsp, PageUnit pageUnit) {
+    private void fillNewsLinks(String rsp, PageUnit pageUnit) {
 
 //        rsp page is an valid artical searching page;
         NewsListExtractor extractor;
@@ -199,7 +200,7 @@ public class FactivaSearch extends Action {
         return dateList;
     }
 
-    public void getNewsByCompany(CompanyUnit unit, StringBuffer buffer) {
+    private void getNewsByCompany(CompanyUnit unit, StringBuffer buffer) {
 
 
         String url = login.getDefault();
@@ -218,8 +219,6 @@ public class FactivaSearch extends Action {
          *  If the page number exceeds 100;
          *  if it does, divide the datePairs
          */
-
-
         /*
          *  check files
          *
@@ -345,9 +344,7 @@ public class FactivaSearch extends Action {
             time = 1;
         }
         String text2 = "NOTICE: Get a new token in " + time + " secs..." + "\n\n";
-
         Logger.log(text2);
-
         try {
 
             Thread.sleep(time * 1000);
