@@ -14,7 +14,6 @@ public class LoginFactory {
 
     public Login createLogin(LoginType type, String user, String pass) {
 
-
         if (type.getCode() == LoginType.UNSW.getCode()) {
             return new LoginUNSW(false);
         } else if (type.getCode() == LoginType.UNSWPROXY.getCode()) {
