@@ -374,3 +374,232 @@ Retrieving: Norman in deal to sell beef to the US    | 12 January 2008
 
 ------107------
 Retrieving: Stronger AACo share price may put spanner in the works    | 10 January 2008
+[15:32:07] loading.
+.
+.
+.
+.
+[15:32:20] loading.
+.
+.
+.
+.
+[15:32:33] loading.
+.
+.
+.
+.
+[15:32:46] loading.
+.
+.
+.
+.
+[15:32:58] loading.
+.
+.
+.
+.
+[15:33:10] loading.
+.
+.
+.
+.
+.
+.
+[15:33:21] finished!
+[15:33:21] SKIPPED: australian agricultural company limited.
+[15:33:21] PARSING: qantas airways limited ... 
+[15:33:24] SUCCESS: QNTAS => Qantas Airways Ltd
+[15:33:28] expected: 14830 
+[15:33:28] page number exceeds limitation, divide and conquer
+[15:33:28] SKIPPED: 1_1_1980-31_12_1980#qantas airways .xml
+[15:33:28] Collecting links from 1/1/1981 to 31/12/1981
+[15:33:31] collecting links ... 
+[15:33:31] no result!
+[15:33:31] collected: 0
+[15:33:31] start processing 0 links
+[15:33:31] ## storing 1_1_1981-31_12_1981#qantas airways .xml
+[15:33:31] Collecting links from 1/1/1982 to 31/12/1982
+[15:33:33] collecting links ... 
+[15:33:33] no result!
+[15:33:33] collected: 0
+[15:33:33] start processing 0 links
+[15:33:33] ## storing 1_1_1982-31_12_1982#qantas airways .xml
+[15:33:33] Collecting links from 1/1/1983 to 31/12/1983
+[15:33:36] collecting links ... 
+[15:33:36] no result!
+[15:33:36] collected: 0
+[15:33:36] start processing 0 links
+[15:33:36] ## storing 1_1_1983-31_12_1983#qantas airways .xml
+[15:33:36] Collecting links from 1/1/1984 to 31/12/1984
+[15:33:38] collecting links ... 
+[15:33:38] no result!
+[15:33:38] collected: 0
+[15:33:38] start processing 0 links
+[15:33:38] ## storing 1_1_1984-31_12_1984#qantas airways .xml
+[15:33:38] Collecting links from 1/1/1985 to 31/12/1985
+[15:33:40] collecting links ... 
+[15:33:40] no result!
+[15:33:40] collected: 0
+[15:33:40] start processing 0 links
+[15:33:40] ## storing 1_1_1985-31_12_1985#qantas airways .xml
+[15:33:40] Collecting links from 1/1/1986 to 31/12/1986
+[15:33:44] collecting links ... 
+[15:33:44] no result!
+[15:33:44] collected: 0
+[15:33:44] start processing 0 links
+[15:33:44] ## storing 1_1_1986-31_12_1986#qantas airways .xml
+[15:33:44] Collecting links from 1/1/1987 to 31/12/1987
+[15:33:48] collecting links ... 
+[15:33:48] no result!
+[15:33:48] collected: 0
+[15:33:48] start processing 0 links
+[15:33:48] ## storing 1_1_1987-31_12_1987#qantas airways .xml
+[15:33:48] Collecting links from 1/1/1988 to 31/12/1988
+[15:33:50] collecting links ... 
+[15:33:50] no result!
+[15:33:50] collected: 0
+[15:33:50] start processing 0 links
+[15:33:50] ## storing 1_1_1988-31_12_1988#qantas airways .xml
+[15:33:50] Collecting links from 1/1/1989 to 31/12/1989
+[15:33:53] collecting links ... 
+[15:33:53] no result!
+[15:33:53] collected: 0
+[15:33:53] start processing 0 links
+[15:33:53] ## storing 1_1_1989-31_12_1989#qantas airways .xml
+[15:33:53] Collecting links from 1/1/1990 to 31/12/1990
+[15:33:54] collecting links ... 
+[15:33:54] no result!
+[15:33:54] collected: 0
+[15:33:54] start processing 0 links
+[15:33:54] ## storing 1_1_1990-31_12_1990#qantas airways .xml
+[15:33:54] Collecting links from 1/1/1991 to 31/12/1991
+[15:33:57] collecting links ... 
+[15:33:57] no result!
+[15:33:57] collected: 0
+[15:33:57] start processing 0 links
+[15:33:57] ## storing 1_1_1991-31_12_1991#qantas airways .xml
+[15:33:57] Collecting links from 1/1/1992 to 31/12/1992
+[15:33:58] collecting links ... 
+[15:33:58] no result!
+[15:33:58] collected: 0
+[15:33:58] start processing 0 links
+[15:33:58] ## storing 1_1_1992-31_12_1992#qantas airways .xml
+[15:33:58] Collecting links from 1/1/1993 to 31/12/1993
+[15:34:00] collecting links ... 
+[15:34:00] no result!
+[15:34:00] collected: 0
+[15:34:00] start processing 0 links
+[15:34:00] ## storing 1_1_1993-31_12_1993#qantas airways .xml
+[15:34:00] Collecting links from 1/1/1994 to 31/12/1994
+[15:34:03] collecting links ... 
+[15:34:03] no result!
+[15:34:03] collected: 0
+[15:34:03] start processing 0 links
+[15:34:03] ## storing 1_1_1994-31_12_1994#qantas airways .xml
+[15:34:03] Collecting links from 1/1/1995 to 31/12/1995
+[15:34:06] collecting links ... 
+[15:34:06] no result!
+[15:34:06] collected: 0
+[15:34:06] start processing 0 links
+[15:34:06] ## storing 1_1_1995-31_12_1995#qantas airways .xml
+[15:34:06] Collecting links from 1/1/1996 to 31/12/1996
+[15:34:09] collecting links ... 
+[15:34:09] 
+== Continue with page [2/2] ==
+[22:50:14] loading.
+.
+.
+.
+.
+[22:50:27] loading.
+.
+.
+.
+.
+[21:48:49] loading 
+.
+.
+.
+.
+.
+[21:49:26] loading.
+.
+.
+.
+.
+[21:49:39] loading.
+.
+.
+.
+.
+[21:49:50] loading.
+.
+.
+.
+.
+[21:50:02] loading.
+.
+.
+.
+.
+[21:50:14] loading.
+.
+.
+.
+.
+[21:50:26] loading.
+.
+.
+.
+.
+[21:50:38] loading.
+.
+.
+.
+.
+[21:56:23] loading.
+.
+.
+.
+.
+[21:56:36] loading.
+.
+.
+.
+.
+[21:57:58] loading 
+.
+.
+.
+.
+.
+.
+. finished!
+[21:58:05] SKIPPED: australian agricultural company limited.
+[21:58:05] PARSING: acacia resources limited ... 
+[21:58:08] DROPPED: acacia resources != AngloGold Ashanti Ltd
+[21:58:08] FAILURE: acacia resources limited NOT FOUND!
+[21:58:08] PARSING: absolute return fund (the) ... 
+[21:58:10] FAILURE: absolute return fund (the) NOT FOUND!
+[21:58:10] PARSING: australian asiatic corporation limited ... 
+[21:58:13] FAILURE: australian asiatic corporation limited NOT FOUND!
+[21:58:13] PARSING: aapc limited. ... 
+[21:58:15] DROPPED: aapc limited. != Accor SA
+[15:49:45] loading.
+.
+.
+.
+.
+.
+.
+[15:49:52] finished!
+[15:49:52] SKIPPED: acacia resources limited
+[15:49:52] SKIPPED: absolute return fund (the)
+[15:49:52] SKIPPED: australian asiatic corporation limited
+[15:49:52] SKIPPED: australian agricultural company limited.
+[15:49:52] PARSING: aapc limited. ... 
+[15:49:54] DROPPED: aapc limited. != Accor SA
+[15:49:56] SUCCESS: OCEQTY => AAPC Ltd
+[15:50:00] expected: 27 
+[15:50:00] Collecting links from 1/1/1980 to 31/12/2008
