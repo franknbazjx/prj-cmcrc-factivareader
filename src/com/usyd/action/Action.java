@@ -9,6 +9,7 @@ import com.usyd.control.Executor;
 import com.usyd.control.GetAction;
 import com.usyd.control.GetNews;
 import com.usyd.control.PostAction;
+import com.usyd.page.NewsItemExtractor;
 import com.usyd.unit.NewsUnit;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -22,7 +23,7 @@ public class Action {
     protected HttpClient httpClient;
 
     private Object controllabeRunning(Executor executor){
-        System.out.println("##>> Enter the controllable running module");
+        System.out.println(">>");
         Controller controller = new Controller(executor);
         Thread thread = new Thread(controller);
         thread.start();
@@ -31,7 +32,7 @@ public class Action {
         } catch (InterruptedException ex) {
             System.out.println("Controller finished");
         }
-        System.out.println("##<< Exit the controllable running module");
+        System.out.println("<<");
         return executor.getObj();
     }
 
@@ -58,8 +59,8 @@ public class Action {
         }
     }
 
-    protected NewsUnit getNewsUnit(String page, String url){
-        Executor executor = new GetNews(url, page);
+    protected NewsUnit getNewsUnit(NewsItemExtractor extractor){
+        Executor executor = new GetNews(extractor);
         Object obj = controllabeRunning(executor);
         if(obj != null){
             return (NewsUnit)obj;

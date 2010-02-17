@@ -10,7 +10,6 @@ import com.usyd.unit.NewsUnit;
 import com.usyd.page.CompanyNameExtractor;
 import com.usyd.page.NewsItemExtractor;
 import com.usyd.page.NewsListExtractor;
-import com.usyd.type.LoginType;
 import com.usyd.unit.ArgumentUnit;
 import com.usyd.unit.DatePairs;
 import com.usyd.unit.PageUnit;
@@ -28,14 +27,8 @@ import org.apache.commons.httpclient.NameValuePair;
  */
 public class SearchCore extends Action {
 
-    /*
-     *  Pre-condition: 'LoginUNSW'
-     *
-     *  1.  The fastiva search webpage has been opened
-     *  2.  Authentication has been setup.
-     */
+
     private Login login;
-//    private List<String> companyList;
     private ArgumentUnit argument;
 
     public SearchCore(ArgumentUnit argument) {
@@ -60,8 +53,6 @@ public class SearchCore extends Action {
         while (true) {
             String _xformsessstate = login.getXFORMSESSSTATE();
             String url = login.getSbService();
-            //  String url = "http://global.factiva.com/sb/sbservice.aspx";
-            //  String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/sb/sbservice.aspx";
             NameValuePair[] data = {
                 new NameValuePair("_XFORMSESSSTATE", _xformsessstate),
                 new NameValuePair("hideInfo", "false"),
@@ -142,9 +133,6 @@ public class SearchCore extends Action {
                 NameValuePair[] data = FileLoader.getNextPage(login.getXFORMSESSSTATE(),
                         login.getXFORMSTATE(), (pageUnit.getCurrentPage() - 1) * 100, pageUnit.getNumOfLinks());
                 String url = login.getDefault();
-                //String url = "http://global.factiva.com/ha/default.aspx";
-                //String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
-
                 rsp = this.getPostContent(url, data);
                 extractor = new NewsListExtractor(rsp);
 
@@ -187,7 +175,7 @@ public class SearchCore extends Action {
             if (!extractor.isErrorPage()) {
                 int links = getNumOfLinks(rsp);
                 Logger.log("expected: " + links + " ");
-                if (links > 500) {
+                if (links > 200) {
                     Logger.log("page number exceeds limitation, divide and conquer\n");
                     dateList = argument.divide();
                 } else {
@@ -205,10 +193,6 @@ public class SearchCore extends Action {
 
 
         String url = login.getDefault();
-//        String url = "http://global.factiva.com/ha/default.aspx";
-//        String url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/ha/default.aspx";
-
-
         String _COMPANY_NAME = "[{30:0,5:\""
                 + unit.getShortName().trim() + "\",29:0,28:\""
                 + unit.getFullName().trim() + "\",33:0,21:0,20:0}]";
@@ -273,7 +257,6 @@ public class SearchCore extends Action {
 
     private void storeTempFile(List<NewsUnit> tempOutput, String tempFileName) {
 
-        Logger.log("## storing " + tempFileName);
         Logger.store("<?xml version=\"1.0\"?>", "tmp/" + tempFileName);
         Logger.store("<ROOT>\n", "tmp/" + tempFileName);
         for (NewsUnit news : tempOutput) {
@@ -290,35 +273,21 @@ public class SearchCore extends Action {
 
             // open each article links
             String url = login.getAa(link);
-//            url = "http://global.factiva.com/aa/?" + link;
-//            url = "http://global.factiva.com.ezproxy1.library.usyd.edu.au/aa/?" + link;
 
             int sleep = 1;
             while (true) {
 
                 String newsPage = this.getGetContent(url);
-
-                System.out.println("1");
-
                 newsPage = newsPage.replaceAll("\r\n", "");
-
-                System.out.println("2");
                 // format the page
                 NewsItemExtractor extractor = new NewsItemExtractor(newsPage, url);
-
-                System.out.println("3");
-
                 if (newsPage.equals("") || extractor.isErrorPage()) {
                     sleep = reset(sleep);
                     continue;
                 } else {
-                    System.out.println("4");
-                    NewsUnit item = this.getNewsUnit(newsPage, url);
-                    System.out.println("6");
+                    NewsUnit item = this.getNewsUnit(extractor);
                     if (item != null) {
-                        Logger.log("------" + counter + "------\n"
-                                + "Retrieving: " + item.getTitle() + " | "
-                                + item.getDate() + "\n" + "\n");
+                        Logger.log( counter + ":\t" + item.getTitle().trim() + " | " + item.getDate().trim() + "\n");
                         Logger.updateProgress(pageUnit.size(), counter, unit.getSearchName());
                         output.add(item);
 
