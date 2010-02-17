@@ -22,9 +22,7 @@ public class NewsUnit implements Comparable {
     private String doc_id;
     private String text;
 
-    public NewsUnit(String url) {
-        
-        this.url = StringEscapeUtils.escapeXml(url);
+    public NewsUnit() {
     }
 
     public NewsUnit(String url, String source, String title, String author,
@@ -108,6 +106,10 @@ public class NewsUnit implements Comparable {
         return url;
     }
 
+    public void setUrl(String url) {
+        this.url = StringEscapeUtils.escapeXml(url);;
+    }
+
     public String getWords() {
         return words;
     }
@@ -119,7 +121,7 @@ public class NewsUnit implements Comparable {
 
     public boolean validate() {
 
-        if (this.getUrl() == null || this.getUrl().length() == 0
+        if (    this.getUrl() == null || this.getUrl().length() == 0
                 || this.getDate() == null || this.getDate().length() == 0
                 || this.getDoc_id() == null || this.getDoc_id().length() == 0
                 || this.getSource() == null || this.getSource().length() == 0

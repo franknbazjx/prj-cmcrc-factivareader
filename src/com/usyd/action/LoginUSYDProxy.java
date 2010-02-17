@@ -206,7 +206,7 @@ public class LoginUSYDProxy extends Login {
         System.out.println(para);
 
         url = newurl;
-        newurl = login1(a, "finc", "finc2008", para, newurl, url);
+        newurl = login1(a, user, pass, para, newurl, url);
         System.out.println("1:" + newurl);
         page = get1(a, newurl, url);
 //        //Util.print2File("redir.html", page);

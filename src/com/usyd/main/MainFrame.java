@@ -46,7 +46,18 @@ public class MainFrame extends javax.swing.JFrame {
 
     /** Creates new form MainFrame */
     public MainFrame() {
+        initDates();
         initComponents();
+
+        this.FromDD.setSelectedIndex(0);
+        this.FromMM.setSelectedIndex(0);
+        this.FromYYYY.setSelectedIndex(0);
+        this.ToDD.setSelectedIndex(30);
+        this.ToMM.setSelectedIndex(11);
+        this.ToYYYY.setSelectedIndex(28);
+
+
+
         argument = new ArgumentUnit();
         argument.setType((LoginType) proxyComboBox.getSelectedItem());
         com.usyd.log.Logger.registerAppender(new Appender() {
@@ -110,6 +121,14 @@ public class MainFrame extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         proxyComboBox = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
+        FromDD = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        FromMM = new javax.swing.JComboBox();
+        FromYYYY = new javax.swing.JComboBox();
+        ToDD = new javax.swing.JComboBox();
+        ToMM = new javax.swing.JComboBox();
+        ToYYYY = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Factiva");
@@ -171,6 +190,22 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Proxy:");
 
+        FromDD.setModel(new javax.swing.DefaultComboBoxModel(dates));
+
+        jLabel2.setText("From(dd/mm/yyyy)");
+
+        jLabel3.setText("To (dd/mm/yyyy)");
+
+        FromMM.setModel(new javax.swing.DefaultComboBoxModel(months));
+
+        FromYYYY.setModel(new javax.swing.DefaultComboBoxModel(years));
+
+        ToDD.setModel(new javax.swing.DefaultComboBoxModel(dates));
+
+        ToMM.setModel(new javax.swing.DefaultComboBoxModel(months));
+
+        ToYYYY.setModel(new javax.swing.DefaultComboBoxModel(years));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -183,7 +218,23 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(FromDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FromMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FromYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ToDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ToMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -192,7 +243,15 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(proxyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(FromDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(FromMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(FromYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ToDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ToMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -218,7 +277,8 @@ public class MainFrame extends javax.swing.JFrame {
                 StringBuffer lines = new StringBuffer();
                 companies = new ArrayList<String>();
                 while ((line = rd.readLine()) != null) {
-                    line.replaceAll("/", "|");
+                    line.replaceAll("/", "#");
+                    line.replaceAll("\"", "#");
                     companies.add(line);
                     lines.append(line);
                     lines.append(System.getProperty("line.separator"));
@@ -261,9 +321,25 @@ public class MainFrame extends javax.swing.JFrame {
             @Override
             public String doInBackground() throws InterruptedException {
                 argument.setCompanyList(companies);
-                argument.setDatePairs(new DatePairs(1980, 1, 1, 2008, 12, 31));
+
+                int fromD = Integer.parseInt((String) FromDD.getSelectedItem());
+                int fromM = Integer.parseInt((String) FromMM.getSelectedItem());
+                int fromY = Integer.parseInt((String) FromYYYY.getSelectedItem());
+
+                int toD = Integer.parseInt((String) ToDD.getSelectedItem());
+                int toM = Integer.parseInt((String) ToMM.getSelectedItem());
+                int toY = Integer.parseInt((String) ToYYYY.getSelectedItem());
+
+
+                argument.setDatePairs(new DatePairs(fromY, fromM, fromD, toY, toM, toD));
                 argument.setUser(user);
                 argument.setPass(pass);
+                FromDD.setEnabled(false);
+                FromMM.setEnabled(false);
+                FromYYYY.setEnabled(false);
+                ToDD.setEnabled(false);
+                ToMM.setEnabled(false);
+                ToYYYY.setEnabled(false);
                 SearchCore search = new SearchCore(argument);
                 search.start(jCheckBox1.isSelected());
                 return null;
@@ -282,8 +358,16 @@ public class MainFrame extends javax.swing.JFrame {
         argument.setType((LoginType) proxyComboBox.getSelectedItem());
     }//GEN-LAST:event_proxyComboBoxActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox FromDD;
+    private javax.swing.JComboBox FromMM;
+    private javax.swing.JComboBox FromYYYY;
+    private javax.swing.JComboBox ToDD;
+    private javax.swing.JComboBox ToMM;
+    private javax.swing.JComboBox ToYYYY;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton openBtn;
@@ -296,4 +380,25 @@ public class MainFrame extends javax.swing.JFrame {
     private String user;
     private String pass;
     private ArgumentUnit argument;
+    private String[] dates;
+    private String[] years;
+    private String[] months;
+
+    private void initDates() {
+        dates = new String[31];
+        int index = 0;
+        for (int i = 1; i <= 31; i++) {
+            dates[index++] = i + "";
+        }
+        index = 0;
+        months = new String[12];
+        for (int i = 1; i <= 12; i++) {
+            months[index++] = i + "";
+        }
+        index = 0;
+        years = new String[41];
+        for (int i = 1980; i <= 2020; i++) {
+            years[index++] = i + "";
+        }
+    }
 }

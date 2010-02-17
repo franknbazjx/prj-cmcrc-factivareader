@@ -80,7 +80,23 @@ public class DatePairs {
     public List<DatePairs> divide(){
         List<DatePairs> list = new ArrayList();
         for(int i = this.fromY; i <= this.toY; i ++){
-            list.add(new DatePairs(i, 1, 1, i, 12, 31));
+
+            int fM = 1;
+            int fD = 1;
+            int tM = 12;
+            int tD = 31;
+
+
+            if(i == this.fromY){
+                fM = fromM;
+                fD = fromD;
+            }
+
+            if(i == toY){
+                tM = toM;
+                tD = toD;
+            }
+            list.add(new DatePairs(i, fM, fD, i, tM, tD));
         }
 
         return list;

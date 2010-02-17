@@ -54,6 +54,7 @@ public class SearchCore extends Action {
             String company, boolean fuzzy) {
 
         CompanyUnit unit = null;
+        company = company.replaceAll("#", "");
 
         int sleep = 1;
         while (true) {
@@ -303,7 +304,7 @@ public class SearchCore extends Action {
 
                 System.out.println("2");
                 // format the page
-                NewsItemExtractor extractor = new NewsItemExtractor(newsPage);
+                NewsItemExtractor extractor = new NewsItemExtractor(newsPage, url);
 
                 System.out.println("3");
 
@@ -311,11 +312,8 @@ public class SearchCore extends Action {
                     sleep = reset(sleep);
                     continue;
                 } else {
-
                     System.out.println("4");
-                    NewsUnit item = new NewsUnit(url);
-                    System.out.println("5");
-                    item = extractor.getNews(item);
+                    NewsUnit item = this.getNewsUnit(newsPage, url);
                     System.out.println("6");
                     if (item != null) {
                         Logger.log("------" + counter + "------\n"
