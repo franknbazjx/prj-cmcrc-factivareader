@@ -13,11 +13,13 @@ import java.util.List;
  */
 public class NewsItemExtractor extends Extractor {
 
-    public NewsItemExtractor(String page) {
+    private String url;
+    public NewsItemExtractor(String page, String url) {
         super(page);
+        this.url = url;
     }
 
-    public NewsUnit getNews(NewsUnit item) {
+    public NewsUnit getNews() {
 
         page = page.replaceAll("\n", "");
         page = page.replaceAll("\r", "");
@@ -32,6 +34,9 @@ public class NewsItemExtractor extends Extractor {
 //      43
 //      English
 //      (c) 1999 Nationwide News Proprietary Ltd
+
+        NewsUnit item = new NewsUnit();
+        item.setUrl(url);
 
         List<String> lines = getByPattern("<div id=\"hd\">(.*?)<div id=\"pageFooter\">", page);
         String ret = "<div id=\"hd\">" + lines.get(0);

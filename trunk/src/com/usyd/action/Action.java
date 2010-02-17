@@ -7,7 +7,9 @@ package com.usyd.action;
 import com.usyd.control.Controller;
 import com.usyd.control.Executor;
 import com.usyd.control.GetAction;
+import com.usyd.control.GetNews;
 import com.usyd.control.PostAction;
+import com.usyd.unit.NewsUnit;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 
@@ -19,7 +21,8 @@ public class Action {
 
     protected HttpClient httpClient;
 
-    private String controllabeRunning(Executor executor){
+    private Object controllabeRunning(Executor executor){
+        System.out.println("##>> Enter the controllable running module");
         Controller controller = new Controller(executor);
         Thread thread = new Thread(controller);
         thread.start();
@@ -28,21 +31,41 @@ public class Action {
         } catch (InterruptedException ex) {
             System.out.println("Controller finished");
         }
-        return executor.getRsp();
+        System.out.println("##<< Exit the controllable running module");
+        return executor.getObj();
     }
 
 
     protected String getPostContent(String url, NameValuePair[] data) {
 
         Executor executor = new PostAction(url, data, httpClient);
-        String rsp = controllabeRunning(executor);
-        return rsp;
+        Object obj = controllabeRunning(executor);
+        if(obj != null){
+            return (String)obj;
+        } else {
+            return "";
+        }
     }
 
     protected String getGetContent(String url) {
 
         Executor executor = new GetAction(url, httpClient);
-        String rsp = controllabeRunning(executor);
-        return rsp;
+        Object obj = controllabeRunning(executor);
+        if(obj != null){
+            return (String)obj;
+        } else {
+            return "";
+        }
     }
+
+    protected NewsUnit getNewsUnit(String page, String url){
+        Executor executor = new GetNews(url, page);
+        Object obj = controllabeRunning(executor);
+        if(obj != null){
+            return (NewsUnit)obj;
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -4,7 +4,6 @@
  */
 package com.usyd.control;
 
-import com.usyd.log.Logger;
 import com.usyd.util.PageLoader;
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
@@ -32,7 +31,7 @@ public class GetAction extends Executor {
         try {
             httpClient.executeMethod(get);
             System.out.println("execute get!");
-            rsp = PageLoader.getPage(get);
+            obj = PageLoader.getPage(get);
             System.out.println("load done!");
             synchronized (lock) {
                 lock.notify();
@@ -40,7 +39,7 @@ public class GetAction extends Executor {
         } catch (IOException ex) {
         } finally {
             get.releaseConnection();
-            System.out.println("release connection\n");
+            System.out.println("release connection");
         }
     }
 }

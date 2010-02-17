@@ -12,10 +12,11 @@ package com.usyd.control;
 public abstract class Executor implements Runnable {
 
     protected final Object lock;
-    protected String rsp;
+    protected Object obj;
+    
     public Executor() {
         lock = new Object();
-        rsp = "";
+        obj = null;
     }
     public void run() {
     }
@@ -24,7 +25,7 @@ public abstract class Executor implements Runnable {
         return lock;
     }
 
-    public String getRsp() {
-        return rsp;
+    public Object getObj(){
+        return obj;
     }
 }

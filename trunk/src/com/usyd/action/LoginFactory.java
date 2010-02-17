@@ -20,7 +20,7 @@ public class LoginFactory {
             return new LoginUNSW(true);
         } else if (type.getCode() == LoginType.USYD.getCode()) {
             return new LoginUSYD(user, pass);
-        } else if (type.getCode() == LoginType.UNSWPROXY.getCode()) {
+        } else if (type.getCode() == LoginType.USYDPROXY.getCode()) {
             return new LoginUSYDProxy(user, pass);
         } else {
             return null;

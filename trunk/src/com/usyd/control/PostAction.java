@@ -37,7 +37,7 @@ public class PostAction extends Executor {
         try {
             httpClient.executeMethod(post);
             System.out.println("execute post!");
-            rsp = PageLoader.getPage(post);
+            obj = PageLoader.getPage(post);
             System.out.println("load done!");
             synchronized (lock) {
                 lock.notify();
@@ -45,7 +45,7 @@ public class PostAction extends Executor {
         } catch (IOException ex) {
         } finally {
             post.releaseConnection();
-            System.out.println("release connection\n");
+            System.out.println("release connection");
         }
     }
 }
