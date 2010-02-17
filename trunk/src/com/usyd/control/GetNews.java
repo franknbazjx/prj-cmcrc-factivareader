@@ -12,20 +12,18 @@ import com.usyd.page.NewsItemExtractor;
  */
 public class GetNews extends Executor {
 
-    private String url;
-    private String page;
+//    private String url;
+//    private String page;
+    private NewsItemExtractor extractor;
 
-    public GetNews(String url, String page) {
+    public GetNews(NewsItemExtractor extractor) {
         super();
-        this.url = url;
-        this.page = page;
+        this.extractor = extractor;
         this.obj = null;
     }
 
     @Override
     public void run() {
-
-        NewsItemExtractor extractor = new NewsItemExtractor(page, url);
         this.obj = extractor.getNews();
         synchronized (lock) {
             lock.notify();

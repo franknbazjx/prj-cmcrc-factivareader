@@ -129,6 +129,7 @@ public class MainFrame extends javax.swing.JFrame {
         ToDD = new javax.swing.JComboBox();
         ToMM = new javax.swing.JComboBox();
         ToYYYY = new javax.swing.JComboBox();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Factiva");
@@ -206,6 +207,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         ToYYYY.setModel(new javax.swing.DefaultComboBoxModel(years));
 
+        closeButton.setText("close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -234,7 +242,9 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ToMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                        .addComponent(closeButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -251,7 +261,8 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(FromYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ToDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ToMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ToYYYY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(closeButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -316,6 +327,7 @@ public class MainFrame extends javax.swing.JFrame {
         startBtn.setEnabled(false);
         pBar.setStringPainted(true);
 
+
         worker = new SwingWorker<String, Void>() {
 
             @Override
@@ -340,6 +352,9 @@ public class MainFrame extends javax.swing.JFrame {
                 ToDD.setEnabled(false);
                 ToMM.setEnabled(false);
                 ToYYYY.setEnabled(false);
+                jCheckBox1.setEnabled(false);
+                openBtn.setEnabled(false);
+                
                 SearchCore search = new SearchCore(argument);
                 search.start(jCheckBox1.isSelected());
                 return null;
@@ -357,6 +372,12 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         argument.setType((LoginType) proxyComboBox.getSelectedItem());
     }//GEN-LAST:event_proxyComboBoxActionPerformed
+
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_closeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox FromDD;
     private javax.swing.JComboBox FromMM;
@@ -364,6 +385,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox ToDD;
     private javax.swing.JComboBox ToMM;
     private javax.swing.JComboBox ToYYYY;
+    private javax.swing.JButton closeButton;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
