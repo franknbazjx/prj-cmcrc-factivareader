@@ -1,0 +1,1 @@
+grab the data from factiva database
